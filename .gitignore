@@ -1,0 +1,29 @@
+bin/
+out/
+tmp/
+target/
+pages
+.DS_Store
+local.properties
+.project
+.classpath
+.settings
+*.iws
+*.iml
+*.ipr
+*.orig
+*/bin/
+*/tmp/
+*/target/
+*/Release/
+*/Debug/
+*/obj/
+*/.references/
+*/Web References/
+*/Service References/
+*.csproj.user
+*.suo
+*.mwb.bak
+*.orig
+*.dll
+*.exe

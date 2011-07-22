@@ -231,6 +231,13 @@ under the License.
     <module>dotnet</module>
   </modules>  
   <build> 
+  <extensions>
+	<extension>
+		<groupId>org.apache.maven.wagon</groupId>
+		<artifactId>wagon-ssh</artifactId>
+		<version>1.0</version>
+	</extension>
+    </extensions>
     <plugins>    
        <plugin> 
         <groupId>org.apache.maven.plugins</groupId>      
@@ -591,26 +598,28 @@ under the License.
   <properties> 
     <mavenVersion>2.0.9</mavenVersion>
     <plexus.utils.version>1.5.1</plexus.utils.version>
-    <npanday.snapshots.url>http://repo.npanday.org/archiva/repository/npanday-snapshots</npanday.snapshots.url>
-    <npanday.releases.url>http://repo.npanday.org/archiva/repository/npanday-releases</npanday.releases.url>
+    <npanday.snapshots.url>http://lis-dev/maven_repo/internal_snapshot/</npanday.snapshots.url>
+    <npanday.releases.url>http://lis-dev/maven_repo/internal/</npanday.releases.url>
     <bootstrap.npanday.version>${project.version}</bootstrap.npanday.version>
     <!--bootstrap.npanday.version>1.2.1</bootstrap.npanday.version-->
   </properties>  
   <distributionManagement>
     <repository>
-      <id>vmbuild.staging</id>
-      <url>http://vmbuild.apache.org/archiva/repository/staged-npanday/</url>
+      <id>internal</id>
+	  <name>Internal Release Repository</name>
+      <url>scp://lis-dev/mirror/www/maven_repo/internal</url>
     </repository>
     <snapshotRepository>
-      <id>vmbuild.snapshots</id>
-      <url>http://repo.npanday.org/archiva/repository/npanday-snapshots/</url>
+      <id>internal_snapshot</id>
+	  <name>Internal Snapshot Repository</name>
+      <url>scp://lis-dev/mirror/www/maven_repo/internal_snapshot</url>
     </snapshotRepository>
   </distributionManagement>
   <pluginRepositories>
     <pluginRepository>
-      <id>npanday.group</id>
-      <name>NPanday Group Repository</name>
-      <url>http://repo.npanday.org/archiva/repository/npanday-group</url>
+      <id>npanday_plugins</id>
+      <name>NPanday Plugins Repository</name>
+      <url>http://lis-dev/maven_repo/npanday_plugins</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
@@ -618,12 +627,13 @@ under the License.
   </pluginRepositories>
   <repositories>
     <repository>
-      <id>npanday.group</id>
-      <name>NPanday Group Repository</name>
-      <url>http://repo.npanday.org/archiva/repository/npanday-group</url>
+      <id>internal</id>
+      <name>LIS Internal Repository</name>
+      <url>http://lis-dev/maven_repo/internal/</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
     </repository>
   </repositories>
+
 </project>
