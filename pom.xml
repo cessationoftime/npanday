@@ -616,10 +616,10 @@ under the License.
     </snapshotRepository>
   </distributionManagement>
   <pluginRepositories>
-    <pluginRepository>
-      <id>npanday_plugins</id>
-      <name>NPanday Plugins Repository</name>
-      <url>http://lis-dev/maven_repo/npanday_plugins</url>
+	<pluginRepository>
+      <id>aduna_plugins</id>
+      <name>Aduna Plugins Repository</name>
+      <url>http://repository.aduna-software.org/maven2/</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
