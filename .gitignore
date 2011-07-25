@@ -1,4 +1,5 @@
 bin/
+obj/
 out/
 tmp/
 target/
@@ -27,3 +28,4 @@ local.properties
 *.orig
 *.dll
 *.exe
+*.pdb
