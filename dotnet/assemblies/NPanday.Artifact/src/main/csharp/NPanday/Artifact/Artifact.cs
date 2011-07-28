@@ -52,8 +52,16 @@ namespace NPanday.Artifact
 
         public string Classifier
         {
-            get { return classifier; }
+            get { return (String.IsNullOrEmpty(classifier) ? "" : classifier); }
             set { classifier = value; }
+        }
+
+        /// <summary>
+        /// If the classifier is not null or empty return it with a '-' prefix, else return an empty string
+        /// </summary>
+        public string ClassifierWithDashPrefix
+        {
+            get { return (String.IsNullOrEmpty(classifier) ? "" : "-" + classifier); }
         }
 
         public string Extension

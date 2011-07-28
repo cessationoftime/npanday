@@ -55,6 +55,14 @@ namespace NPanday.Artifact
         }
 
 
+        public static string TrimExtension(string input, string extension)
+        {
+            extension = "." + extension.Replace(".","");
+
+            return input.Remove((input.Length) - extension.Length);
+        }
+
+
         public static string[] GetRelativePathTokens(DirectoryInfo parentPath, FileInfo path)
         {
             return GetRelativePathTokens(parentPath.FullName, path.FullName);

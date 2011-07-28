@@ -33,8 +33,7 @@ namespace NPanday.Artifact
 
         public ArtifactRepository GetArtifactRepository()
         {
-            ArtifactRepository artifactRepository = new ArtifactRepository();
-            artifactRepository.Init(this, new DirectoryInfo(SettingsUtil.GetLocalRepositoryPath()));
+            ArtifactRepository artifactRepository = new ArtifactRepository(new DirectoryInfo(SettingsUtil.GetLocalRepositoryPath()));
             return artifactRepository;
         }
 

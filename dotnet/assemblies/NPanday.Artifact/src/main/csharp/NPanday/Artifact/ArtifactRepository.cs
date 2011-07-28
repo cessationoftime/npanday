@@ -40,17 +40,17 @@ namespace NPanday.Artifact
 
         public string GetLocalRepositoryPath(Artifact artifact, string ext)
         {
-            return string.Format(@"{0}\{1}\{2}\{3}\{2}-{3}{4}", localRepository.FullName, artifact.GroupId.Replace(@".",@"\"), artifact.ArtifactId, artifact.Version, ext);
+            return string.Format(@"{0}\{1}\{2}\{3}\{2}-{3}{4}{5}", localRepository.FullName, artifact.GroupId.Replace(@".",@"\"), artifact.ArtifactId, artifact.Version,artifact.ClassifierWithDashPrefix, ext);
         }
 
         public string GetRemoteRepositoryPath(Artifact artifact, string url, string ext)
         {
-            return string.Format("{0}/{1}/{2}/{3}/{2}-{3}{4}", url, artifact.GroupId.Replace('.','/'), artifact.ArtifactId, artifact.Version, ext);
+            return string.Format("{0}/{1}/{2}/{3}/{2}-{3}{4}{5}", url, artifact.GroupId.Replace('.','/'), artifact.ArtifactId, artifact.Version,artifact.ClassifierWithDashPrefix, ext);
         }
 
         public string GetRemoteRepositoryPath(Artifact artifact, string timeStampVersion, string url, string ext)
         {
-            return string.Format("{0}/{1}/{2}/{3}/{2}-{4}{5}", url, artifact.GroupId.Replace('.', '/'), artifact.ArtifactId, artifact.Version, timeStampVersion, ext);
+            return string.Format("{0}/{1}/{2}/{3}/{2}-{3}{4}{5}{6}", url, artifact.GroupId.Replace('.', '/'), artifact.ArtifactId, artifact.Version,artifact.ClassifierWithDashPrefix, timeStampVersion, ext);
         }
 
         public Artifact GetArtifactFor(String uri)
@@ -101,8 +101,7 @@ namespace NPanday.Artifact
             }
             
             artifact.FileInfo = new FileInfo(localRepository.FullName + Path.DirectorySeparatorChar + Tokenize( artifact.GroupId )+ Path.DirectorySeparatorChar + artifact.ArtifactId + Path.DirectorySeparatorChar
-                + artifact.Version + Path.DirectorySeparatorChar + artifact.ArtifactId + "-" + artifact.Version +
-                (string.IsNullOrEmpty(artifact.Classifier) ? "" : "-" + artifact.Classifier) + ".dll");
+                + artifact.Version + Path.DirectorySeparatorChar + artifact.ArtifactId + "-" + artifact.Version + artifact.ClassifierWithDashPrefix + ".dll");
             return artifact;
         }
 
@@ -146,6 +145,7 @@ namespace NPanday.Artifact
             artifact.ArtifactId = dependency.artifactId;
             artifact.GroupId = dependency.groupId;
             artifact.Version = dependency.version;
+            artifact.Classifier = dependency.classifier;
             artifact.FileInfo = new FileInfo( GetLocalRepositoryPath(artifact, ".dll"));
             return artifact;
         }
@@ -174,9 +174,25 @@ namespace NPanday.Artifact
             string fileName = tokens[tokens.Length - 1];
             int index = fileName.LastIndexOf( "." );
             
+            
+            
             string ext = fileName.Substring( index );
             string version = tokens[tokens.Length - 2];
             string artifactId = tokens[tokens.Length - 3];
+
+            string classifier = "";
+            if (fileName.Split('-').Length > 2)
+            {
+                int versionIndex = fileName.IndexOf(version);
+                string versionAndAfter = fileName.Substring(versionIndex);
+                string afterVersion = versionAndAfter.Substring(version.Length).TrimStart('-');
+                string afterVersionwithoutExtension = PathUtil.TrimExtension(afterVersion, ext);
+                string[] tks = afterVersionwithoutExtension.Split(new char[]{'-'},StringSplitOptions.RemoveEmptyEntries);
+                if (tks.Length>0) classifier = tks[0];
+                if (classifier.ToUpper() == "SNAPSHOT") classifier = "";
+                //classifier = PathUtil.TrimExtension(fileName.Substring(dashIndex), ext);
+                //if (classifier
+            }
 
             StringBuilder group = new StringBuilder();
 
@@ -191,6 +207,7 @@ namespace NPanday.Artifact
             artifact.ArtifactId = artifactId;
             artifact.Version = version;
             artifact.GroupId = groupId;
+            artifact.Classifier = classifier;
             artifact.FileInfo = new FileInfo(GetLocalRepositoryPath(artifact, ext));
             
             
@@ -202,9 +219,8 @@ namespace NPanday.Artifact
 
 
 
-        public void Init(ArtifactContext artifactContext, DirectoryInfo localRepository)
+        public ArtifactRepository(DirectoryInfo localRepository)
         {
-            this.artifactContext = artifactContext;
             this.localRepository = localRepository;
         }
 

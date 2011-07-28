@@ -162,7 +162,7 @@ namespace NPanday.VisualStudio.Addin
             foreach (NPanday.Artifact.Artifact artifact in localArtifacts)
             {
                 LocalArtifactItem item = new LocalArtifactItem(new string[] {
-                    artifact.ArtifactId, artifact.Version}, -1);
+                    artifact.ArtifactId, artifact.Version, artifact.Classifier}, -1);
                 item.Artifact = artifact;
                 localListView.Items.Add(item);
             }
@@ -740,8 +740,6 @@ namespace NPanday.VisualStudio.Addin
                 MessageBox.Show(this, err.Message, "NPanday Add Dependency Warning:", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
-            this.Close();
         }
 
         private void update_Click(object sender, EventArgs e)

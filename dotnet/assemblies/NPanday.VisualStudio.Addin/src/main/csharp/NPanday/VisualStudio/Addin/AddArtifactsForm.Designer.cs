@@ -57,8 +57,8 @@ namespace NPanday.VisualStudio.Addin
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.localTabPage = new System.Windows.Forms.TabPage();
             this.localListView = new System.Windows.Forms.ListView();
-            this.ArtifactNameHeader = new System.Windows.Forms.ColumnHeader();
-            this.versionHeader = new System.Windows.Forms.ColumnHeader();
+            this.ArtifactNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.versionHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.artifactTabControl = new System.Windows.Forms.TabControl();
             this.ConfigureTab = new System.Windows.Forms.TabPage();
             this.UpdateLabel = new System.Windows.Forms.Label();
@@ -67,6 +67,7 @@ namespace NPanday.VisualStudio.Addin
             this.checkBoxRelease = new System.Windows.Forms.CheckBox();
             this.update = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.classifierHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.remoteTabPage.SuspendLayout();
             this.localTabPage.SuspendLayout();
             this.artifactTabControl.SuspendLayout();
@@ -115,8 +116,8 @@ namespace NPanday.VisualStudio.Addin
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(438, 222);
             this.treeView1.TabIndex = 0;
-            this.treeView1.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseDoubleClick);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+            this.treeView1.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseDoubleClick);
             // 
             // localTabPage
             // 
@@ -136,7 +137,8 @@ namespace NPanday.VisualStudio.Addin
             this.localListView.BackgroundImageTiled = true;
             this.localListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ArtifactNameHeader,
-            this.versionHeader});
+            this.versionHeader,
+            this.classifierHeader});
             this.localListView.Location = new System.Drawing.Point(16, 15);
             this.localListView.Margin = new System.Windows.Forms.Padding(2);
             this.localListView.Name = "localListView";
@@ -249,6 +251,10 @@ namespace NPanday.VisualStudio.Addin
             this.label1.TabIndex = 6;
             this.label1.Text = "Remote Repository Location";
             // 
+            // classifierHeader
+            // 
+            this.classifierHeader.Text = "Classifier";
+            // 
             // AddArtifactsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -290,5 +296,6 @@ namespace NPanday.VisualStudio.Addin
         private Label label1;
         private ComboBox RepoCombo;
         private Label UpdateLabel;
+        private ColumnHeader classifierHeader;
     }
 }

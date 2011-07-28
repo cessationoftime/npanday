@@ -1,46 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">  
-   
-  <parent> 
-    <groupId>org.apache.npanday</groupId>
-    <version>1.4.1-incubating-SNAPSHOT</version>  
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://maven.apache.org/POM/4.0.0">
+  <parent>
     <artifactId>NPanday.Project</artifactId>
-  </parent>  
-  <modelVersion>4.0.0</modelVersion>  
-  <artifactId>NPanday.Assemblies</artifactId>  
-  <packaging>pom</packaging>  
-  <name>NPanday :: .NET Assemblies</name>  
-  <modules>
-    <module>NPanday.Model.Pom</module>  
-    <module>NPanday.Model.Settings</module>  
-    <module>NPanday.Model.AutomationExtensibility</module>
-    <module>NPanday.Logging</module> 
-    <module>NPanday.Artifact</module> 
-    <module>NPanday.Plugin</module>
-    <module>NPanday.Plugin.MojoGenerator</module>	
-    <module>NPanday.Plugin.Loader</module>  
-    <module>NPanday.Plugin.Runner</module>  
-  </modules>
-
+    <groupId>org.apache.npanday</groupId>
+    <version>1.4.1-incubating-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>NPanday.Assemblies</artifactId>
+  <packaging>pom</packaging>
+  <name>NPanday :: .NET Assemblies</name>
   <profiles>
     <profile>
       <id>VisualStudio</id>
@@ -50,15 +18,32 @@ under the License.
         </os>
       </activation>
       <modules>
-        <!-- TODO: should build without EnvDTE80, etc. but currently has dependencies on windows libs -->
         <module>NPanday.Utils</module>
         <module>NPanday.ProjectImporter</module>
-
-        <!-- TODO: should be optional -->
         <module>NPanday.VisualStudio</module>
         <module>NPanday.VisualStudio.Addin</module>
         <module>NPanday.VisualStudio.ProjectWizard</module>
       </modules>
     </profile>
   </profiles>
+  <modules>
+    <module>NPanday.Model.Pom</module>
+    <module>NPanday.Model.Settings</module>
+    <module>NPanday.Model.AutomationExtensibility</module>
+    <module>NPanday.Logging</module>
+    <module>NPanday.Artifact</module>
+    <module>NPanday.Plugin</module>
+    <module>NPanday.Plugin.MojoGenerator</module>
+    <module>NPanday.Plugin.Loader</module>
+    <module>NPanday.Plugin.Runner</module>
+  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>NPanday.Model.Pom</groupId>
+      <artifactId>NPanday.Model.Pom</artifactId>
+      <version>1.4.1.0</version>
+      <type>gac_msil</type>
+      <classifier>4b435f4d76e2f0e6</classifier>
+    </dependency>
+  </dependencies>
 </project>
