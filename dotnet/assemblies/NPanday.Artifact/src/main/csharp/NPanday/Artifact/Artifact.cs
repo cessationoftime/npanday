@@ -42,10 +42,18 @@ namespace NPanday.Artifact
 		
 		private string systemPath;
 
+        private string classifier;
+
         public String RemotePath
         {
             get { return remotePath; }
             set { this.remotePath = value; }
+        }
+
+        public string Classifier
+        {
+            get { return classifier; }
+            set { classifier = value; }
         }
 
         public string Extension

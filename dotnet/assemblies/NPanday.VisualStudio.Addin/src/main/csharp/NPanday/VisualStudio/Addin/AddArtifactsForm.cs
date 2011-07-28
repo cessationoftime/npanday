@@ -395,7 +395,7 @@ namespace NPanday.VisualStudio.Addin
                 if (pom != null)
                 {
                     PomHelperUtility pomUtil = new PomHelperUtility(pom);
-                    pomUtil.AddPomDependency(artifact.GroupId, artifact.ArtifactId, artifact.Version);
+                    pomUtil.AddPomDependency(artifact.GroupId, artifact.ArtifactId, artifact.Version,artifact.Classifier);
                 }
             }
             catch (Exception err)

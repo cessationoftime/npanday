@@ -784,15 +784,20 @@ namespace NPanday.Utils
 
         public void AddPomDependency(string groupId, string artifactId)
         {
-            AddPomDependency(groupId, artifactId, null, "dotnet-library", null, null);
+            AddPomDependency(groupId, artifactId, null, "dotnet-library", null, null, null);
         }
 
         public void AddPomDependency(string groupId, string artifactId, string version)
         {
-            AddPomDependency(groupId, artifactId, version, "dotnet-library", null, null);
+            AddPomDependency(groupId, artifactId, version, "dotnet-library", null, null,null);
         }
 
-        public void AddPomDependency(string groupId, string artifactId, string version, string type, string scope, string systemPath)
+        public void AddPomDependency(string groupId, string artifactId, string version, string classifier)
+        {
+            AddPomDependency(groupId, artifactId, version, "dotnet-library", null, null, classifier);
+        }
+
+        public void AddPomDependency(string groupId, string artifactId, string version, string type, string scope, string systemPath, string classifier)
         {
             NPanday.Model.Pom.Dependency dependency = new NPanday.Model.Pom.Dependency(); ;
 
@@ -801,10 +806,11 @@ namespace NPanday.Utils
             dependency.version = version;
             dependency.type = type;
             dependency.scope = scope;
-            if (!string.IsNullOrEmpty(systemPath))
-            {
-                dependency.systemPath = new FileInfo(systemPath).FullName;
-            }
+            if (!string.IsNullOrEmpty(classifier)) dependency.classifier = classifier;
+
+            if (!string.IsNullOrEmpty(systemPath)) dependency.systemPath = new FileInfo(systemPath).FullName;
+                
+            
             AddPomDependency(dependency);
 
         }

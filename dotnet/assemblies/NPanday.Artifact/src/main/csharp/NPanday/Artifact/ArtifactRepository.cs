@@ -90,9 +90,19 @@ namespace NPanday.Artifact
                 artifact.Version = tokens[size - 2];
                 String[] extToken = tokens[size - 1].Split(".".ToCharArray());
                 artifact.Extension = extToken[extToken.Length - 1];
+
+               string lastToken = tokens[size - 1];
+               string[] artifactTokens = lastToken.Split('-');
+               if (artifactTokens.Length > 2)
+               {
+                   string classifierWithExtension = artifactTokens[artifactTokens.Length - 1];
+                   artifact.Classifier = classifierWithExtension.Remove(classifierWithExtension.Length - 1 - (artifact.Extension.Length));
+               }
             }
-            artifact.FileInfo = new FileInfo(localRepository.FullName + Path.DirectorySeparatorChar + Tokenize( artifact.GroupId )+ Path.DirectorySeparatorChar + artifact.ArtifactId + Path.DirectorySeparatorChar 
-                + artifact.Version + Path.DirectorySeparatorChar + artifact.ArtifactId+ "-" + artifact.Version+ ".dll");
+            
+            artifact.FileInfo = new FileInfo(localRepository.FullName + Path.DirectorySeparatorChar + Tokenize( artifact.GroupId )+ Path.DirectorySeparatorChar + artifact.ArtifactId + Path.DirectorySeparatorChar
+                + artifact.Version + Path.DirectorySeparatorChar + artifact.ArtifactId + "-" + artifact.Version +
+                (string.IsNullOrEmpty(artifact.Classifier) ? "" : "-" + artifact.Classifier) + ".dll");
             return artifact;
         }
 
