@@ -28,7 +28,7 @@ using NPanday.Artifact;
 using EnvDTE;
 using EnvDTE80;
 using NPanday.Logging;
-
+using NPanday.Model;
 namespace ConnectTest.UtilsTest
 {
     [TestFixture]
@@ -40,14 +40,16 @@ namespace ConnectTest.UtilsTest
         private DirectoryInfo repoCopy;
         private ReferenceManager refManager;
         private Artifact testArtifact;
-
+        ProjectStructure project;
         public AddLocalMavenArtifactTest()
         {
-            testProject = new DirectoryInfo(FileUtils.getBaseDirectory() + "\\src\\test\\resource\\TestProject");
-            testProjectCopy = new DirectoryInfo(FileUtils.getBaseDirectory() + "\\src\\test\\resource\\TestProjectCopy");
+            project = new ProjectStructure("NPanday.VisualStudio.Addin");
+            
+            testProject = project.TestResource.Folder("TestProject").Info;
+            testProjectCopy = project.TestResource.Folder("TestProjectCopy",false).Info;
 
-            repo = new DirectoryInfo(FileUtils.getBaseDirectory() + "\\src\\test\\resource\\m2");
-            repoCopy = new DirectoryInfo(FileUtils.getBaseDirectory() + "\\src\\test\\resource\\m2Copy");
+            repo = project.TestResource.Folder("m2").Info;
+            repoCopy = project.TestResource.Folder("m2Copy",false).Info;
         }
 
         [TestFixtureSetUp]
@@ -69,7 +71,8 @@ namespace ConnectTest.UtilsTest
         [Test]
         public void addMavenArtifact()
         {
-            testArtifact.FileInfo = new FileInfo(FileUtils.getBaseDirectory() + "\\src\\test\\resource\\m2Copy\\ClassLibrary1.dll");
+            
+            testArtifact.FileInfo = new FileInfo(repoCopy.FullName + "\\ClassLibrary1.dll");
             refManager.CopyArtifact(testArtifact, null);
             Assert.IsTrue(new FileInfo(refManager.ReferenceFolder + "\\npanday.test\\NPanday.Test-1.0\\NPanday.Test.dll").Exists);
         }
@@ -77,14 +80,14 @@ namespace ConnectTest.UtilsTest
         [Test]
         public void addExistingMavenArtifact()
         {
-            testArtifact.FileInfo = new FileInfo(FileUtils.getBaseDirectory() + "\\src\\test\\resource\\m2Copy\\ClassLibrary1.dll");
+            testArtifact.FileInfo = new FileInfo(repoCopy.FullName + "\\ClassLibrary1.dll");
             refManager.CopyArtifact(testArtifact, null);
             FileInfo copiedArtifact = new FileInfo(refManager.ReferenceFolder + "\\npanday.test\\NPanday.Test-1.0\\NPanday.Test.dll");
 
             Assert.IsTrue(copiedArtifact.Exists);
             Assert.AreEqual(testArtifact.FileInfo.Length, copiedArtifact.Length);
 
-            testArtifact.FileInfo = new FileInfo(FileUtils.getBaseDirectory() + "\\src\\test\\resource\\m2Copy\\ClassLibrary2.dll");
+            testArtifact.FileInfo = new FileInfo(repoCopy.FullName + "\\ClassLibrary2.dll");
 
             Assert.IsFalse(copiedArtifact.Length == testArtifact.FileInfo.Length);
             //so that new artifact will have a newer timestamp

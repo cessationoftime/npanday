@@ -27,11 +27,6 @@ namespace ConnectTest.UtilsTest
 {
     public class FileUtils
     {
-        public static string getBaseDirectory()
-        {
-            return new FileInfo(Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().LastIndexOf("target"))).FullName;
-        }
-
         public static string getLocalRepository()
         {
             string homePath = string.Empty;

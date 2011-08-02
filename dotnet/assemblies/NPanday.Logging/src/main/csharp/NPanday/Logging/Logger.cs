@@ -54,6 +54,7 @@ namespace NPanday.Logging
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void Log(Level level, String msg)
 		{
+            msg = "\n" + msg;
 			LogRecord logRecord = new LogRecord(level, msg);
 			if(handlers.Count == 0)
 			{

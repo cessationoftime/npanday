@@ -25,6 +25,7 @@ using NUnit.Framework;
 using NPanday.Utils;
 using NPanday.VisualStudio.Addin;
 using System.IO;
+using NPanday.Model;
 
 namespace ConnectTest.UtilsTest
 {
@@ -48,7 +49,10 @@ namespace ConnectTest.UtilsTest
         public void ProjectImporterValidationTestSetup()
         {
             importerTest = new NPandayImportProjectFormTest();
-            solutionSample = new FileInfo(Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().LastIndexOf("target")) + "\\src\\test\\resource\\ClassLibrary1\\ClassLibrary1.sln").FullName;
+
+            solutionSample = new ProjectStructure("NPanday.VisualStudio.Addin")
+               .TestResource.File("ClassLibrary1\\ClassLibrary1.sln").FullName;
+          
         }
         
         [Test]

@@ -24,7 +24,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text;
 
-using NPanday.Model.Setting;
+using NPanday.Model.Settings;
 
 namespace NPanday.Artifact
 {

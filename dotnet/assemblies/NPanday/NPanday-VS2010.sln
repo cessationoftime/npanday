@@ -15,13 +15,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPanday.VisualStudio.Projec
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPanday.VisualStudio", "..\NPanday.VisualStudio\src\main\csharp\NPanday.VisualStudio.csproj", "{95661103-78B8-423A-80CA-41AFC69BD1DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPanday.ProjectImporterEngine", "..\NPanday.ProjectImporter\Engine\src\main\csharp\NPanday.ProjectImporterEngine.csproj", "{91FC215D-C041-4000-8F71-C04A9EEABE55}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPanday.ProjectImporter", "..\NPanday.ProjectImporter\Engine\src\main\csharp\NPanday.ProjectImporter.csproj", "{91FC215D-C041-4000-8F71-C04A9EEABE55}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPanday.Utils", "..\NPanday.Utils\src\main\csharp\NPanday.Utils.csproj", "{CAA4864F-F4C8-4024-8535-8B8C112307CE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPanday.Model.Settings", "..\NPanday.Model.Settings\src\main\csharp\NPanday.Model.Settings.csproj", "{F905C7DA-9D1D-488D-9084-99D7969C2BDD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPanday.VisualStudio.Addin.Test", "..\NPanday.VisualStudio.Addin.Test\NPanday.VisualStudio.Addin.Test.csproj", "{314904F8-6E4F-47C0-951D-DCDC058CB8F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPanday.SettingsUtil-Test", "..\NPanday.Model.Settings\src\test\csharp\NPanday.SettingsUtil-Test\NPanday.SettingsUtil-Test.csproj", "{FEEC01CB-2577-4059-9609-531A4913BCDA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +76,10 @@ Global
 		{314904F8-6E4F-47C0-951D-DCDC058CB8F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{314904F8-6E4F-47C0-951D-DCDC058CB8F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{314904F8-6E4F-47C0-951D-DCDC058CB8F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEEC01CB-2577-4059-9609-531A4913BCDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEEC01CB-2577-4059-9609-531A4913BCDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEEC01CB-2577-4059-9609-531A4913BCDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEEC01CB-2577-4059-9609-531A4913BCDA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

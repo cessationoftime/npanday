@@ -48,7 +48,7 @@ using NPanday.Artifact;
 using NPanday.Logging;
 using NPanday.VisualStudio.Logging;
 
-using NPanday.Model.Setting;
+using NPanday.Model.Settings;
 using NPanday.Model.Pom;
 
 
@@ -1244,7 +1244,7 @@ namespace NPanday.VisualStudio.Addin
         void resetReferenceButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             refManagerHasError = false;
-            outputWindowPane.OutputString(string.Format("\n[INFO] Re-syncing artifacts in {0} project... ", CurrentSelectedProject.Name));
+            outputWindowPane.OutputString(string.Format("\n[INFO] Re-syncing artifacts in {0} project...\n ", CurrentSelectedProject.Name));
             try
             {
                 IReferenceManager refmanager = new ReferenceManager();

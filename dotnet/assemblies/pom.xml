@@ -23,7 +23,7 @@
         <module>NPanday.VisualStudio</module>
         <module>NPanday.VisualStudio.Addin</module>
         <module>NPanday.VisualStudio.ProjectWizard</module>
-      </modules>
+      </modules>      
     </profile>
   </profiles>
   <modules>
@@ -37,13 +37,5 @@
     <module>NPanday.Plugin.Loader</module>
     <module>NPanday.Plugin.Runner</module>
   </modules>
-  <dependencies>
-    <dependency>
-      <groupId>NPanday.Model.Pom</groupId>
-      <artifactId>NPanday.Model.Pom</artifactId>
-      <version>1.4.1.0</version>
-      <type>gac_msil</type>
-      <classifier>4b435f4d76e2f0e6</classifier>
-    </dependency>
-  </dependencies>
+ 
 </project>

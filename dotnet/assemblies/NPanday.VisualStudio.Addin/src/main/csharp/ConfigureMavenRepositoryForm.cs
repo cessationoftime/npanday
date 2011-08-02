@@ -28,7 +28,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
-using NPanday.Model.Setting;
+using NPanday.Model.Settings;
 
 using System.Xml;
 using System.Xml.Serialization;
@@ -47,7 +47,7 @@ namespace NPanday.VisualStudio.Addin
             settingsPath = SettingsUtil.GetUserSettingsPath();
             try
             {
-                settings = SettingsUtil.ReadSettings(new FileInfo(settingsPath));
+                settings = Settings.Read(SettingsPath.UserSettings);
             }
             catch (Exception e)
             {
@@ -58,13 +58,13 @@ namespace NPanday.VisualStudio.Addin
 
         private void update_Click(object sender, EventArgs e)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(NPanday.Model.Setting.Settings));
+            XmlSerializer serializer = new XmlSerializer(typeof(NPanday.Model.Settings.Settings));
             TextWriter writer = new StreamWriter(settingsPath);
-            if (settings.profiles != null)
+            if (settings.Profiles != null)
             {
-                foreach (Profile profile in settings.profiles)
+                foreach (Profile profile in settings.Profiles)
                 {
-                    foreach (Repository repository in profile.repositories)
+                    foreach (Repository repository in profile.Repositories)
                     {
                         if (repository.id.Equals("NPanday.id"))
                         {
@@ -80,20 +80,11 @@ namespace NPanday.VisualStudio.Addin
 
             Profile profile1 = new Profile();
             Repository repository1 = new Repository();
-            profile1.repositories = new Repository[] { repository1 };
+            profile1.Repositories.Add(repository1);
             UpdateRepositoryFor(profile1, repository1);
+            
+            settings.Profiles.Add(profile1);
 
-            if (settings.profiles == null)
-            {
-                settings.profiles = new Profile[] { profile1 };
-            }
-            else
-            {
-                List<Profile> profiles = new List<Profile>();
-                profiles.AddRange(settings.profiles);
-                profiles.Add(profile1);
-                settings.profiles = profiles.ToArray();
-            }
             serializer.Serialize(writer, settings);
             writer.Close();
             this.Close();
@@ -119,14 +110,14 @@ namespace NPanday.VisualStudio.Addin
         private void ConfigureMavenRepositoryForm_Load(object sender, EventArgs e)
         {
 
-            if (settings == null || settings.profiles == null)
+            if (settings == null || settings.Profiles == null)
             {
                 return;
             }
 
-            foreach (Profile profile in settings.profiles)
+            foreach (Profile profile in settings.Profiles)
             {
-                foreach (Repository repository in profile.repositories)
+                foreach (Repository repository in profile.Repositories)
                 {
                     if (repository.id.Equals("NPanday.id"))
                     {

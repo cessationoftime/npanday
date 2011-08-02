@@ -105,6 +105,13 @@ namespace NPanday.Artifact
 			get { return systemPath; }
 			set { systemPath = value; }
 		}
-		
+
+        public bool isSnapshot
+        {
+            get {
+                return this.Version.Contains("SNAPSHOT");
+            }
+        }
+
     }     
 }

@@ -24,7 +24,8 @@ using System.Text;
 using NUnit.Framework;
 using System.IO;
 using NPanday.Utils;
-
+using NPanday.Model;
+using ResourceFolder = NPanday.Model.ProjectStructure.Res.ResourceFolder;
 namespace ConnectTest.UtilsTest
 {
     [TestFixture]
@@ -46,15 +47,17 @@ namespace ConnectTest.UtilsTest
 
         public RenameWebReferenceTest()
         {
-            pomPath = (new FileInfo(Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().LastIndexOf("target")) + "\\src\\test\\resource\\ClassLibrary1\\ClassLibrary1\\pom.xml").FullName);
+            ResourceFolder classLibrary = new ProjectStructure("NPanday.VisualStudio.Addin")
+               .TestResource.Folder("ClassLibrary1\\ClassLibrary1");
 
+            pomPath = classLibrary.File("pom.xml").FullName;
             pomCopyPath = pomPath.Replace("pom.xml", "pomCopy.xml");
 
             pomCopy = new PomHelperUtility(pomCopyPath);
 
-            File.Copy(pomPath, pomCopyPath);
+            File.Copy(pomPath, pomCopyPath,true);
 
-            fullPath = (new FileInfo(Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().LastIndexOf("target")) + "\\src\\test\\resource\\ClassLibrary1\\ClassLibrary1\\Web References\\WebRef").FullName);
+            fullPath = classLibrary.Folder("Web References\\WebRef").FullName;
             fullPathCopy = fullPath.Replace(oldName, newName); 
             path = "Web References\\" + oldName + "\\demoService.wsdl";
         }

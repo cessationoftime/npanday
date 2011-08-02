@@ -24,7 +24,8 @@ using System.Text;
 using NUnit.Framework;
 using System.IO;
 using NPanday.Utils;
-
+using NPanday.Model;
+using ResourceFolder = NPanday.Model.ProjectStructure.Res.ResourceFolder;
 namespace ConnectTest.UtilsTest
 {
     [TestFixture]
@@ -45,16 +46,18 @@ namespace ConnectTest.UtilsTest
 
         public AddWebReferenceTest()
         {
-            pomPath = (new FileInfo(Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().LastIndexOf("target")) + "\\src\\test\\resource\\ClassLibrary1\\ClassLibrary1\\pom.xml").FullName);
+            ProjectStructure ps = new ProjectStructure("NPanday.VisualStudio.Addin");
+            ResourceFolder classLibraryResource = ps.TestResource.Folder("ClassLibrary1\\ClassLibrary1\\");
+            pomPath = classLibraryResource.File("pom.xml").FullName;
             pomCopyPath = pomPath.Replace("pom.xml", "pomCopy.xml");
 
-            fullPath = (new FileInfo(Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().LastIndexOf("target")) + "\\src\\test\\resource\\ClassLibrary1\\ClassLibrary1\\Web References\\WebRef").FullName);
+            fullPath = classLibraryResource.Folder("Web References\\WebRef").FullName;
             path = "Web References\\WebRef\\demoService.wsdl";
 
-            testFullPath = (new FileInfo(Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().LastIndexOf("target")) + "\\src\\test\\resource\\ClassLibrary1\\ClassLibrary1\\Web References\\WebRef2").FullName);
+            testFullPath = classLibraryResource.Folder("Web References\\WebRef2").FullName;
             testPath = "Web References\\WebRef2\\dilbert.wsdl";
 
-            pomPath2 = (new FileInfo(Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().LastIndexOf("target")) + "\\src\\test\\resource\\ClassLibrary1\\ClassLibrary1\\pom2.xml").FullName);
+            pomPath2 = classLibraryResource.File("pom2.xml").FullName;
             pomCopyPath2 = pomPath2.Replace("pom2.xml", "pomCopy2.xml");
         }
 

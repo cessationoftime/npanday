@@ -24,7 +24,8 @@ using System.Text;
 using NUnit.Framework;
 using NPanday.Utils;
 using System.IO;
-
+using NPanday.Model;
+using ResourceFolder = NPanday.Model.ProjectStructure.Res.ResourceFolder;
 namespace ConnectTest.UtilsTest
 {
     [TestFixture]
@@ -44,7 +45,10 @@ namespace ConnectTest.UtilsTest
         [SetUp]
         public void TestSetUp()
         {
-            pomPath = (new FileInfo(Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().LastIndexOf("target")) + "\\src\\test\\resource\\ClassLibrary1\\ClassLibrary1\\pom.xml").FullName);
+            ResourceFolder classLibraryResource = new ProjectStructure("NPanday.VisualStudio.Addin")
+               .TestResource.Folder("ClassLibrary1\\ClassLibrary1\\");
+            pomPath = classLibraryResource.File("pom.xml").FullName;
+           
 
             pomCopyPath = pomPath.Replace("pom.xml", "pomCopy.xml");
 

@@ -26,7 +26,8 @@ using System.Windows.Forms;
 using NUnit.Framework;
 using NPanday.VisualStudio.Addin;
 using NPanday.Utils;
-using NPanday.Model.Setting;
+using NPanday.Model.Settings;
+using NPanday.Model;
 
 namespace ConnectTest.UtilsTest
 {
@@ -42,7 +43,9 @@ namespace ConnectTest.UtilsTest
         public MavenSettingsConfigurationTest()
         {
 
-            settingsPathOriginal = (new FileInfo(Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().LastIndexOf("target")) + "\\src\\test\\resource\\m2\\test-settings.xml")).FullName;
+            settingsPathOriginal = new ProjectStructure("NPanday.VisualStudio.Addin")
+               .TestResource.File("m2\\test-settings.xml").FullName;
+          
             settingsPath = settingsPathOriginal.Replace("test-settings.xml", "test-settings2.xml");
 
             File.Copy(settingsPathOriginal, settingsPath);
@@ -56,7 +59,7 @@ namespace ConnectTest.UtilsTest
         [Test]
         public void CheckIfSettingsXMLIsValidTest()
         {
-            Assert.IsNotNull(settings.profiles);
+            Assert.IsNotNull(settings.Profiles);
             File.Delete(settingsPath);
         }
     }

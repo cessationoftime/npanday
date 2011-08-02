@@ -62,78 +62,78 @@ under the License.
   <ItemGroup />
   <ItemGroup />
   <ItemGroup>
-    <Compile Include="NPanday\VisualStudio\Addin\AddArtifactsForm.cs">
+    <Compile Include="AddArtifactsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NPanday\VisualStudio\Addin\AddArtifactsForm.Designer.cs">
+    <Compile Include="AddArtifactsForm.Designer.cs">
       <DependentUpon>AddArtifactsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="NPanday\VisualStudio\Addin\ChangeMavenSettingsXmlForm.cs">
+    <Compile Include="ChangeMavenSettingsXmlForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NPanday\VisualStudio\Addin\ChangeMavenSettingsXmlForm.Designer.cs">
+    <Compile Include="ChangeMavenSettingsXmlForm.Designer.cs">
       <DependentUpon>ChangeMavenSettingsXmlForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="NPanday\VisualStudio\Addin\ConfigureMavenRepositoryForm.cs">
+    <Compile Include="ConfigureMavenRepositoryForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NPanday\VisualStudio\Addin\ConfigureMavenRepositoryForm.Designer.cs">
+    <Compile Include="ConfigureMavenRepositoryForm.Designer.cs">
       <DependentUpon>ConfigureMavenRepositoryForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="NPanday\VisualStudio\Addin\Connect.cs" />
-    <Compile Include="NPanday\VisualStudio\Addin\FolderWatcher.cs" />
-    <Compile Include="NPanday\VisualStudio\Addin\LoginForm.cs">
+    <Compile Include="Connect.cs" />
+    <Compile Include="FolderWatcher.cs" />
+    <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NPanday\VisualStudio\Addin\LoginForm.Designer.cs">
+    <Compile Include="LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="NPanday\VisualStudio\Addin\MainFormTest.cs" />
-    <Compile Include="NPanday\VisualStudio\Addin\NPandayImportProjectForm.cs">
+    <Compile Include="MainFormTest.cs" />
+    <Compile Include="NPandayImportProjectForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NPanday\VisualStudio\Addin\NPandayImportProjectForm.Designer.cs">
+    <Compile Include="NPandayImportProjectForm.Designer.cs">
       <DependentUpon>NPandayImportProjectForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="NPanday\VisualStudio\Addin\NPandaySignAssembly.cs">
+    <Compile Include="NPandaySignAssembly.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NPanday\VisualStudio\Addin\NPandaySignAssembly.Designer.cs">
+    <Compile Include="NPandaySignAssembly.Designer.cs">
       <DependentUpon>NPandaySignAssembly.cs</DependentUpon>
     </Compile>
-    <Compile Include="NPanday\VisualStudio\Addin\ReferenceManager.cs" />
-    <Compile Include="NPanday\VisualStudio\Addin\RemoveArtifactsForm.cs">
+    <Compile Include="ReferenceManager.cs" />
+    <Compile Include="RemoveArtifactsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NPanday\VisualStudio\Addin\RemoveArtifactsForm.Designer.cs">
+    <Compile Include="RemoveArtifactsForm.Designer.cs">
       <DependentUpon>RemoveArtifactsForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="NPanday\VisualStudio\Addin\AddArtifactsForm.resx">
+    <EmbeddedResource Include="AddArtifactsForm.resx">
       <DependentUpon>AddArtifactsForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="NPanday\VisualStudio\Addin\ChangeMavenSettingsXmlForm.resx">
+    <EmbeddedResource Include="ChangeMavenSettingsXmlForm.resx">
       <DependentUpon>ChangeMavenSettingsXmlForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="NPanday\VisualStudio\Addin\ConfigureMavenRepositoryForm.resx">
+    <EmbeddedResource Include="ConfigureMavenRepositoryForm.resx">
       <DependentUpon>ConfigureMavenRepositoryForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="NPanday\VisualStudio\Addin\LoginForm.resx">
+    <EmbeddedResource Include="LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NPanday\VisualStudio\Addin\NPandayImportProjectForm.resx">
+    <EmbeddedResource Include="NPandayImportProjectForm.resx">
       <DependentUpon>NPandayImportProjectForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="NPanday\VisualStudio\Addin\NPandaySignAssembly.resx">
+    <EmbeddedResource Include="NPandaySignAssembly.resx">
       <DependentUpon>NPandaySignAssembly.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="NPanday\VisualStudio\Addin\RemoveArtifactsForm.resx">
+    <EmbeddedResource Include="RemoveArtifactsForm.resx">
       <DependentUpon>RemoveArtifactsForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -155,9 +155,9 @@ under the License.
       <Project>{B760D54F-22AC-43E7-A0A6-DE313D4663AF}</Project>
       <Name>NPanday.Plugin</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\NPanday.ProjectImporter\Engine\src\main\csharp\NPanday.ProjectImporterEngine.csproj">
+    <ProjectReference Include="..\..\..\..\NPanday.ProjectImporter\Engine\src\main\csharp\NPanday.ProjectImporter.csproj">
       <Project>{91FC215D-C041-4000-8F71-C04A9EEABE55}</Project>
-      <Name>NPanday.ProjectImporterEngine</Name>
+      <Name>NPanday.ProjectImporter</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\NPanday.Utils\src\main\csharp\NPanday.Utils.csproj">
       <Project>{CAA4864F-F4C8-4024-8535-8B8C112307CE}</Project>
@@ -172,4 +172,8 @@ under the License.
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

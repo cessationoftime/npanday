@@ -26,9 +26,10 @@ using System.IO;
 using NPanday.Utils;
 using System.Reflection;
 using NPanday.Artifact;
-using NPanday.Model.Setting;
+using NPanday.Model.Settings;
 using System.Windows.Forms;
 using System.Net;
+using NPanday.Model.Settings;
 
 /// Author: Leopoldo Lee Agdeppa III
 
@@ -260,14 +261,13 @@ namespace NPanday.ProjectImporter.Digest.Model
         {
             try
             {
-                Settings settings = SettingsUtil.ReadSettings(SettingsUtil.GetUserSettingsPath());
-                if (settings == null || settings.profiles == null)
+                Settings settings = Settings.Read(SettingsPath.UserSettings);
+                if (settings == null || settings.Profiles == null)
                 {
                     MessageBox.Show("Cannot add reference of "+ artifact.ArtifactId + ", no valid Remote Repository was found that contained the Artifact to be Resolved. Please add a Remote Repository that contains the Unresolved Artifact.");
                     return false;
                 }
-                List<string> activeProfiles = new List<string>();
-                activeProfiles.AddRange(settings.activeProfiles);
+
 
                 Dictionary<string, string> mirrors = new Dictionary<string, string>();
 
@@ -285,33 +285,37 @@ namespace NPanday.ProjectImporter.Digest.Model
                     }
                 }
 
-                Dictionary<string,string> repos = new Dictionary<string,string>();
+                List<Repository> repos;
                 
-                foreach (Profile profile in settings.profiles)
+                if (artifact.isSnapshot)
                 {
-                    if (activeProfiles.Contains(profile.id) && profile.repositories != null)
+                    repos = settings.ActiveProfiles.Repositories.SnapshotRepositoriesOnly;
+                }
+                else
+                {
+                    repos = settings.ActiveProfiles.Repositories.ReleaseRepositoriesOnly;
+
+                    // ensure there is at least one repo defined
+                    // TODO: this is just a temporary implementation
+                    if (repos.Count == 0)
                     {
-                        foreach (Repository repo in profile.repositories)
-                        {
-                            repos.Add(repo.id, repo.url);
-                        }
+                        Repository central = new Repository();
+                        central.id = "central";
+                        central.url = "http://repo1.maven.org/maven2";
+                        central.snapshots = new RepositoryPolicy();
+                        central.releases = new RepositoryPolicy();
+                        central.snapshots.enabled = false;
+                        central.releases.enabled = true;
+                        repos.Add(central);
                     }
                 }
-
-                // ensure there is at least one repo defined
-                // TODO: this is just a temporary implementation
-                if (repos.Count == 0)
-                {
-                    repos.Add("central", "http://repo1.maven.org/maven2");
-                }
-
                 // TODO: sustain correct ordering from settings.xml
-                foreach (string id in repos.Keys)
+                foreach (Repository repo in repos)
                 {
-                    string url = repos[id];
-                    if (mirrors.ContainsKey(id))
+                    string url = repo.url;
+                    if (mirrors.ContainsKey(repo.id))
                     {
-                        url = mirrors[id];
+                        url = mirrors[repo.id];
                     }
                     if (mirrors.ContainsKey("*"))
                     {
@@ -320,7 +324,7 @@ namespace NPanday.ProjectImporter.Digest.Model
 
                     ArtifactContext artifactContext = new ArtifactContext();
 
-                    if (artifact.Version.Contains("SNAPSHOT"))
+                    if (artifact.isSnapshot)
                     {
                         string newVersion = GetSnapshotVersion(artifact, url, logger);
 

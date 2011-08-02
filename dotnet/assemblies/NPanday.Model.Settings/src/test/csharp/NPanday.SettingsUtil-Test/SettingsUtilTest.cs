@@ -20,12 +20,12 @@
 #endregion
 
 using NUnit.Framework;
-using NPanday.Model.Setting;
+using NPanday.Model.Settings;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-
+using NPanday.Model;
 namespace NPanday.SettingsUtil_Test
 {
     [TestFixture]
@@ -42,14 +42,17 @@ namespace NPanday.SettingsUtil_Test
         {
             settings = GetSettings("test-settings.xml");
             
-            NPanday.Model.Setting.Profile profile = new NPanday.Model.Setting.Profile();
+            Profile profile = new Profile();
             profile.id = defaultProfileId;
 
-            SettingsUtil.AddRepositoryToProfile(profile, repoUrl1, true, false, settings);
+            profile.Repositories.Add(repoUrl1, true, false);
 
-            Assert.AreEqual(1, settings.profiles.Length, "Settings does not contain a profile");
+            Assert.AreEqual(0, settings.Profiles.Length);
 
-            NPanday.Model.Setting.Repository repository = SettingsUtil.GetRepositoryFromProfile(profile, repoUrl1);
+            //previously it expected the profile to be add to the settings too.
+            //Assert.AreEqual(1, settings.profiles.Length, "Settings does not contain a profile");
+
+            Repository repository = profile.Repositories[repoUrl1];
 
             Assert.IsNotNull(repository, "Repository '" + repoUrl1 + "' was not added to profile");
 
@@ -62,34 +65,37 @@ namespace NPanday.SettingsUtil_Test
         {
             settings = GetSettings("test-settings-with-profile.xml");
 
-            NPanday.Model.Setting.Profile profile = SettingsUtil.GetProfile(settings, defaultProfileId);
+            Assert.AreEqual(1,settings.Profiles.Length);
 
-            SettingsUtil.AddRepositoryToProfile(profile, repoUrl2, true, false, settings);
+            Profile profile = settings.Profiles[defaultProfileId];
+            profile.Repositories.Add(repoUrl2, true, false);
+            
 
-            Assert.AreEqual(1, settings.profiles.Length, "Settings does not contain a profile");
-            Assert.AreEqual(2, settings.profiles[0].repositories.Length);
+            Assert.AreEqual(1, settings.Profiles.Length, "Settings does not contain a profile");
+            Assert.AreEqual(2, settings.Profiles[0].Repositories.Length);
 
-            NPanday.Model.Setting.Repository repository = SettingsUtil.GetRepositoryFromProfile(profile, repoUrl1);
+            Repository repository = profile.Repositories[repoUrl1];
             Assert.IsNotNull(repository, "Repository '" + repoUrl1 + "' was not in the profile");
             Assert.AreEqual("npanday.repo.0", repository.id);
             Assert.AreEqual(repoUrl1, repository.url);
 
-            repository = SettingsUtil.GetRepositoryFromProfile(profile, repoUrl2);
+            repository = profile.Repositories[repoUrl2];
             Assert.IsNotNull(repository, "Repository '" + repoUrl2 + "' was not added to profile");
             Assert.AreEqual("npanday.repo.1", repository.id);
             Assert.AreEqual(repoUrl2, repository.url);
         }
 
+
+
         private Settings GetSettings(string settingsXml)
         {
-			string root = Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().LastIndexOf("target"));
-			string path = Path.Combine(root, "src");
-			path = Path.Combine(path, "test");
-			path = Path.Combine(path, "resource");
-			path = Path.Combine(path, "m2");
-			settingsPath = new FileInfo(Path.Combine(path, settingsXml)).FullName;
-            
-            return SettingsUtil.ReadSettings(settingsPath);
+
+            string path = new ProjectStructure("NPanday.Model.Settings").TestResource.Folder().FullName;
+
+            path = Path.Combine(path, "m2");
+            settingsPath = new FileInfo(Path.Combine(path, settingsXml)).FullName;
+
+            return Settings.Read(settingsPath);
         }
     }
 }

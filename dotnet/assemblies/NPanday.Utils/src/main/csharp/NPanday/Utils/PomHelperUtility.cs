@@ -30,7 +30,7 @@ using System.Xml.XPath;
 using NPanday.Artifact;
 using NPanday.Logging;
 using NPanday.Model.Pom;
-using NPanday.Model.Setting;
+using NPanday.Model.Settings;
 
 using System.Windows.Forms;
 using EnvDTE;

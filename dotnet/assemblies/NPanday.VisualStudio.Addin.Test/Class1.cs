@@ -5,7 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using NPanday.Artifact;
 using System.IO;
-using NPanday.Model.Setting;
+using NPanday.Model.Settings;
 
 namespace NPanday.VisualStudio.Addin.Test
 {
