@@ -48,7 +48,7 @@ namespace ConnectTest.UtilsTest
 
         }
 
-        public static void CopyDirectory(DirectoryInfo source, DirectoryInfo destination)
+        public static void CopyDirectory(DirectoryInfo source, DirectoryInfo destination, bool overwrite)
         {
             if (!destination.Exists)
             {
@@ -59,7 +59,7 @@ namespace ConnectTest.UtilsTest
             foreach (FileInfo filePath in files)
             {
                 if (filePath.Name != null && !filePath.Name.EndsWith(".test"))
-                    filePath.CopyTo(Path.Combine(destination.FullName, filePath.Name));
+                    filePath.CopyTo(Path.Combine(destination.FullName, filePath.Name),overwrite);
             }
 
             DirectoryInfo[] subDirectories = source.GetDirectories();
@@ -67,7 +67,7 @@ namespace ConnectTest.UtilsTest
             {
                 if (!dirPath.Name.Equals(".svn"))
                 {
-                    CopyDirectory(new DirectoryInfo(Path.Combine(source.FullName, dirPath.Name)), new DirectoryInfo(Path.Combine(destination.FullName, dirPath.Name)));
+                    CopyDirectory(new DirectoryInfo(Path.Combine(source.FullName, dirPath.Name)), new DirectoryInfo(Path.Combine(destination.FullName, dirPath.Name)),overwrite);
                 }
             }
         }

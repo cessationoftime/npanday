@@ -21,7 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using NPanday.ProjectImporter.Parser.VisualStudioProjectTypes;
+using NPanday.VisualStudioProjectTypes;
 
 /// Author: Leopoldo Lee Agdeppa III
 

@@ -31,7 +31,6 @@
 // 
 namespace NPanday.Model.Settings {
     using System.Xml.Serialization;
-    using NPanday.Model.Settings;
     using System.Xml;
 using System.IO;
 using System;

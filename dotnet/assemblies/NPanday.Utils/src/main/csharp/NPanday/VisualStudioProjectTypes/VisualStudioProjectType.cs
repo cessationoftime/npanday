@@ -25,7 +25,7 @@ using System.Windows.Forms;
 
 /// Author: Leopoldo Lee Agdeppa III
 
-namespace NPanday.ProjectImporter.Parser.VisualStudioProjectTypes
+namespace NPanday.VisualStudioProjectTypes
 {
     public class VisualStudioProjectType
     {

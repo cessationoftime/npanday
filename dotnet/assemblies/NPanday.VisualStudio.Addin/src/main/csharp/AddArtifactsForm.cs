@@ -43,6 +43,7 @@ using NPanday.Logging;
 using NPanday.Model.Settings;
 
 using NPanday.Utils;
+using NPanday.Model;
 
 namespace NPanday.VisualStudio.Addin
 {
@@ -50,9 +51,9 @@ namespace NPanday.VisualStudio.Addin
     {
         private List<NPanday.Artifact.Artifact> localArtifacts = new List<NPanday.Artifact.Artifact>();
         private ArtifactContext artifactContext;
-        private Project project;
+        private SrcStructure src;
         private NPanday.Logging.Logger logger;
-        private FileInfo pom;
+        private PomXml pom;
         private WebClient webClient = new WebClient();
         public bool fileProtocol = false;
 
@@ -77,9 +78,9 @@ namespace NPanday.VisualStudio.Addin
             get { return settingsPath; }
         }
         
-        public AddArtifactsForm(Project project, ArtifactContext container, Logger logger, FileInfo pom)
+        public AddArtifactsForm(SrcStructure src, ArtifactContext container, Logger logger, PomXml pom)
         {
-            this.project = project;
+            this.src = src;
             this.logger = logger;
             InitializeForm();
             InitializeComponent();
@@ -393,8 +394,7 @@ namespace NPanday.VisualStudio.Addin
             {
                 if (pom != null)
                 {
-                    PomHelperUtility pomUtil = new PomHelperUtility(pom);
-                    pomUtil.AddPomDependency(artifact.GroupId, artifact.ArtifactId, artifact.Version,artifact.Classifier);
+                    pom.AddPomDependency(artifact.GroupId, artifact.ArtifactId, artifact.Version, artifact.Classifier);
                 }
             }
             catch (Exception err)
@@ -407,7 +407,7 @@ namespace NPanday.VisualStudio.Addin
 
         bool addVSProjectReference(Artifact.Artifact artifact, string name)
         {
-            VSProject vsProject = (VSProject)project.Object;
+            VSProject vsProject = src.getProjectObject;
             if (vsProject.References.Find(name) != null)
             {
                 MessageBox.Show(this, "A version of artifact is already added to the project, please remove it first before adding this version.", this.Text);
@@ -439,7 +439,7 @@ namespace NPanday.VisualStudio.Addin
         {
             try
             {
-                VsWebSite.VSWebSite website = (VsWebSite.VSWebSite)project.Object;
+                VsWebSite.VSWebSite website = src.getWebSiteObject;
                 
                 Assembly a = Assembly.LoadFile(artifact.FileInfo.FullName);
                 if (a.ToString().Split(",".ToCharArray())[0].ToLower().StartsWith("interop.", true, CultureInfo.InvariantCulture))
@@ -486,16 +486,15 @@ namespace NPanday.VisualStudio.Addin
 
         private void addReferenceToProject(ref NPanday.Artifact.Artifact artifact, string text)
         {
-            if (project.Object is VSProject)
+            if (src.isProject)
             {
-                IReferenceManager refMgr = new ReferenceManager();
-                refMgr.Initialize((VSLangProj80.VSProject2)project.Object);
+                IReferenceManager refMgr = src.ReferenceManager;
                 artifact = refMgr.Add(new ReferenceInfo(artifact));
 
                 if (!addVSProjectReference(artifact, text))
                     return;
             }
-            else if (Connect.IsWebProject(project))
+            else if (src.isWebProject)
             {
                 if (!addVSWebProjectReference(artifact, text))
                     return;

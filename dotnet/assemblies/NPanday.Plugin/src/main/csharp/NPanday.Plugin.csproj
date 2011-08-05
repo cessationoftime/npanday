@@ -25,7 +25,8 @@ under the License.
     <AssemblyName>NPanday.Plugin</AssemblyName>
     <BaseIntermediateOutputPath>..\..\..\target\obj\</BaseIntermediateOutputPath>
     <OutputType>Library</OutputType>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
     <OutputPath>..\..\..\target\bin\Debug\</OutputPath>

@@ -25,7 +25,7 @@ under the License.
     <AssemblyName>NPanday.Plugin.MojoGenerator</AssemblyName>
     <BaseIntermediateOutputPath>..\..\..\target\obj\</BaseIntermediateOutputPath>
     <OutputType>Exe</OutputType>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup>
     <OutputPath>..\..\..\target\bin\Debug\</OutputPath>

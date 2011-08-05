@@ -24,7 +24,7 @@ using System.Text;
 using NPanday.ProjectImporter.Parser.SlnParser;
 using NPanday.ProjectImporter.Parser.SlnParser.Model;
 using System.IO;
-using NPanday.ProjectImporter.Parser.VisualStudioProjectTypes;
+using NPanday.VisualStudioProjectTypes;
 using System.Text.RegularExpressions;
 using Microsoft.Build.BuildEngine;
 using System.Xml;

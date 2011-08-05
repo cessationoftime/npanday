@@ -50,8 +50,8 @@ namespace ConnectTest.UtilsTest
         {
             importerTest = new NPandayImportProjectFormTest();
 
-            solutionSample = new ProjectStructure("NPanday.VisualStudio.Addin")
-               .TestResource.File("ClassLibrary1\\ClassLibrary1.sln").FullName;
+            solutionSample = new SimpleSrcStructure(MainOrTest.Test, "NPanday.VisualStudio.Addin")
+               .Resources.File("ClassLibrary1\\ClassLibrary1.sln").FullName;
           
         }
         

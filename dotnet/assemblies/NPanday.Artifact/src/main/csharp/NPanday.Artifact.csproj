@@ -25,7 +25,8 @@ under the License.
     <AssemblyName>NPanday.Artifact</AssemblyName>
     <BaseIntermediateOutputPath>..\..\..\target\obj\</BaseIntermediateOutputPath>
     <OutputType>Library</OutputType>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
     <OutputPath>..\..\..\target\bin\Debug\</OutputPath>
@@ -52,12 +53,17 @@ under the License.
     <Compile Include="NPanday\Artifact\ArtifactRepositoryLayout.cs" />
     <Compile Include="NPanday\Artifact\ArtifactScope.cs" />
     <Compile Include="NPanday\Artifact\AssemblyRepositoryLayout.cs" />
+    <Compile Include="NPanday\Artifact\Artifact_Download.cs" />
     <Compile Include="NPanday\Artifact\IArtifactContext.cs" />
     <Compile Include="NPanday\Artifact\JavaRepositoryLayout.cs" />
     <Compile Include="NPanday\Artifact\PathUtil.cs" />
     <Compile Include="NPanday\Artifact\RepositoryType.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\NPanday.Logging\src\main\csharp\NPanday.Logging.csproj">
+      <Project>{C511B03B-8AB7-4E61-9F6E-5E6F9F65E8CE}</Project>
+      <Name>NPanday.Logging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\NPanday.Model.Settings\src\main\csharp\NPanday.Model.Settings.csproj">
       <Project>{F905C7DA-9D1D-488D-9084-99D7969C2BDD}</Project>
       <Name>NPanday.Model.Settings</Name>

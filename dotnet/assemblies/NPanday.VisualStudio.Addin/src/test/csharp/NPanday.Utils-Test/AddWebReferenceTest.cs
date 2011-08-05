@@ -25,14 +25,13 @@ using NUnit.Framework;
 using System.IO;
 using NPanday.Utils;
 using NPanday.Model;
-using ResourceFolder = NPanday.Model.ProjectStructure.Res.ResourceFolder;
 namespace ConnectTest.UtilsTest
 {
     [TestFixture]
     public class AddWebReferenceTest
     {
-        private PomHelperUtility pomCopy;
-        private PomHelperUtility pomCopy2;        
+        private PomXml pomCopy;
+        private PomXml pomCopy2;        
         private String pomPath;
         private String pomPath2;        
         private String pomCopyPath;
@@ -46,8 +45,8 @@ namespace ConnectTest.UtilsTest
 
         public AddWebReferenceTest()
         {
-            ProjectStructure ps = new ProjectStructure("NPanday.VisualStudio.Addin");
-            ResourceFolder classLibraryResource = ps.TestResource.Folder("ClassLibrary1\\ClassLibrary1\\");
+            SimpleSrcStructure ps = new SimpleSrcStructure(MainOrTest.Test, "NPanday.VisualStudio.Addin");
+            ResourceFolder classLibraryResource = ps.Resources.Folder("ClassLibrary1\\ClassLibrary1\\");
             pomPath = classLibraryResource.File("pom.xml").FullName;
             pomCopyPath = pomPath.Replace("pom.xml", "pomCopy.xml");
 
@@ -67,8 +66,8 @@ namespace ConnectTest.UtilsTest
             File.Copy(pomPath, pomCopyPath);
             File.Copy(pomPath2, pomCopyPath2);
 
-            pomCopy = new PomHelperUtility(pomCopyPath);
-            pomCopy2 = new PomHelperUtility(pomCopyPath2);
+            pomCopy = new PomXml(pomCopyPath);
+            pomCopy2 = new PomXml(pomCopyPath2);
             
         }
         [Test]

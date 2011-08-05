@@ -26,8 +26,9 @@ using NPanday.Model.Pom;
 using System.Windows.Forms;
 using EnvDTE;
 using EnvDTE80;
+using NPanday.Model;
 
-namespace NPanday.VisualStudio.Addin
+namespace NPanday.Model
 {
     #region Interfaces
     
@@ -38,7 +39,6 @@ namespace NPanday.VisualStudio.Addin
     {
         Artifact.Artifact Add(IReferenceInfo reference);
         void Remove(IReferenceInfo reference);
-        void Initialize(VSLangProj80.VSProject2 project);
         string ReferenceFolder { get; }
         void CopyArtifact(Artifact.Artifact artifact, NPanday.Logging.Logger logger);
         void ResyncArtifacts(NPanday.Logging.Logger logger);
@@ -55,24 +55,38 @@ namespace NPanday.VisualStudio.Addin
 
     #endregion
 
+    /// <summary>
+    /// manages the .references folder
+    /// </summary>
     public class ReferenceManager : IReferenceManager
-    {
-        bool initialized = false;
-        string pomFile;
-        string projectPath;
-        Solution solution;
+    {      
+        PomXml pomFile;
+       // string projectPath;
+        string[] projectNameList;
+        string referenceFolder;
+        public ReferenceManager(string[] solutionProjectNameList, PomXml pom, string srcFolderPath)
+        {
+            this.projectNameList = solutionProjectNameList;
+            pomFile = pom;
+            if (!pomFile.Exists)
+            {
+                throw new Exception("Project has no valid pom file.");
+            }
+
+            referenceFolder = Path.Combine(srcFolderPath, ".references");
+            
+
+            createReferenceFolder();
+        }
 
         #region IReferenceManager Members
 
         public Artifact.Artifact Add(IReferenceInfo reference)
         {
-            if (!initialized)
-                throw new Exception("Reference manager not initialized.");
-
             string artifactFileName = copyToReferenceFolder(reference.Artifact, referenceFolder);
 
             Artifact.Artifact a = reference.Artifact;
-            
+
             a.FileInfo = new FileInfo(artifactFileName);
             return a;
         }
@@ -82,44 +96,20 @@ namespace NPanday.VisualStudio.Addin
             throw new Exception("The method or operation is not implemented.");
         }
 
-        public void Initialize(VSLangProj80.VSProject2 project)
-        {
-            solution = project.Project.DTE.Solution;
-            projectPath = Path.GetDirectoryName(project.Project.FileName);
-            referenceFolder = Path.Combine( projectPath,".references");
-            pomFile =  Path.Combine(projectPath, "pom.xml");
-
-            initialized = true;
-            if (!pomExist())
-            {
-                throw new Exception("Project has no valid pom file.");
-            }
-            createReferenceFolder();
-        }
-
-        string referenceFolder;
+        
         public string ReferenceFolder
         {
             get
             {
                 return referenceFolder;
             }
-            //for testing purposes
-            set
-            {
-                initialized = true;
-                referenceFolder = value;
-            }
         }
 
         public void CopyArtifact(Artifact.Artifact artifact, NPanday.Logging.Logger logger)
         {
-            if (!initialized)
-                throw new Exception("Reference manager not initialized.");
-
-            if (!artifact.FileInfo.Exists || artifact.Version.EndsWith("SNAPSHOT"))
+            if (!artifact.FileInfo.Exists || artifact.isSnapshot)
             {
-                if (!NPanday.ProjectImporter.Digest.Model.Reference.DownloadArtifact(artifact,logger))
+                if (!artifact.Download(logger))
                 {
                     ReferenceErrorEventArgs e = new ReferenceErrorEventArgs();
                     e.Message = string.Format("Unable to get the artifact {0} from any of your repositories.", artifact.ArtifactId);
@@ -133,8 +123,6 @@ namespace NPanday.VisualStudio.Addin
 
         public void ResyncArtifacts(NPanday.Logging.Logger logger)
         {
-            if (!initialized)
-                throw new Exception("Reference manager not initialized.");
             getReferencesFromPom(logger);
         }
 
@@ -182,7 +170,7 @@ namespace NPanday.VisualStudio.Addin
         void getReferencesFromPom(NPanday.Logging.Logger logger)
         {
             Artifact.ArtifactRepository repository = new NPanday.Artifact.ArtifactContext().GetArtifactRepository();
-            NPanday.Model.Pom.Model m = NPanday.Utils.PomHelperUtility.ReadPomAsModel(new FileInfo(pomFile));
+            NPanday.Model.Pom.Model m = pomFile.ReadPomAsModel();
 
             if (m.dependencies != null)
             {
@@ -190,7 +178,7 @@ namespace NPanday.VisualStudio.Addin
                 {
                     // check if intra-project reference and copy
                     // artifacts from remote repository only
-                    if (!isIntraProject(m, d) && d.classifier == null)
+                    if (!isDependencyAnIntraProject(m, d) && d.classifier == null)
                     {
                         CopyArtifact(repository.GetArtifact(d),logger);
                     }
@@ -198,16 +186,16 @@ namespace NPanday.VisualStudio.Addin
             }
         }
 
-        bool isIntraProject(NPanday.Model.Pom.Model m, Dependency d)
+        bool isDependencyAnIntraProject(NPanday.Model.Pom.Model m, Dependency d)
         {
             string pomGroupId = (m.parent != null) ? m.parent.groupId : m.groupId;
             if (d.groupId == pomGroupId)
             {
                 // loop through VS projects (instead of modules in parent POM) because
                 // we need real-time list of project names in the solution
-                foreach (Project project in solution.Projects)
+                foreach (string projectName in this.projectNameList)
                 {
-                    if (d.artifactId == project.Name)
+                    if (d.artifactId == projectName)
                     {
                         return true;
                     }
@@ -217,10 +205,7 @@ namespace NPanday.VisualStudio.Addin
             return false;
         }
 
-        bool pomExist()
-        {
-            return File.Exists(pomFile);
-        }
+
 
         void createReferenceFolder()
         {

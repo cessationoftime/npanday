@@ -21,10 +21,13 @@
 
 using System;
 using System.IO;
+using NPanday.Model.Settings;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace NPanday.Artifact
 {
-    public sealed class Artifact
+    public sealed partial class Artifact
     {
         private string artifactId;
 
@@ -109,7 +112,7 @@ namespace NPanday.Artifact
         public bool isSnapshot
         {
             get {
-                return this.Version.Contains("SNAPSHOT");
+                return this.Version.EndsWith("SNAPSHOT");
             }
         }
 

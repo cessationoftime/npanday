@@ -29,6 +29,7 @@ using EnvDTE;
 using EnvDTE80;
 using NPanday.Logging;
 using NPanday.Model;
+using Moq;
 namespace ConnectTest.UtilsTest
 {
     [TestFixture]
@@ -40,26 +41,30 @@ namespace ConnectTest.UtilsTest
         private DirectoryInfo repoCopy;
         private ReferenceManager refManager;
         private Artifact testArtifact;
-        ProjectStructure project;
+        SimpleSrcStructure src;
         public AddLocalMavenArtifactTest()
         {
-            project = new ProjectStructure("NPanday.VisualStudio.Addin");
+            src = new SimpleSrcStructure(MainOrTest.Test, "NPanday.VisualStudio.Addin");
             
-            testProject = project.TestResource.Folder("TestProject").Info;
-            testProjectCopy = project.TestResource.Folder("TestProjectCopy",false).Info;
+            testProject = src.Resources.Folder("TestProject").Info;
+            testProjectCopy = src.Resources.Folder("TestProjectCopy", false).Info;
 
-            repo = project.TestResource.Folder("m2").Info;
-            repoCopy = project.TestResource.Folder("m2Copy",false).Info;
+            repo = src.Resources.Folder("m2").Info;
+            repoCopy = src.Resources.Folder("m2Copy", false).Info;
         }
 
         [TestFixtureSetUp]
         public void TestSetUp()
         {
-            FileUtils.CopyDirectory(testProject, testProjectCopy);
-            FileUtils.CopyDirectory(repo, repoCopy);
+            FileUtils.CopyDirectory(testProject, testProjectCopy,true);
+            FileUtils.CopyDirectory(repo, repoCopy,true);
 
-            refManager = new ReferenceManager();
-            refManager.ReferenceFolder = testProjectCopy.FullName + "\\TestProject\\.references";
+            Mock <PomXml> mockPom = new Mock<PomXml>("");
+            mockPom.Setup(x => x.Exists).Returns(true);
+
+            refManager = new ReferenceManager(new String[] { }, mockPom.Object,testProjectCopy.FullName + "\\TestProject");
+
+          //  refManager.ReferenceFolder = testProjectCopy.FullName + "\\TestProject\\.references";
 
             testArtifact = new Artifact();
             testArtifact.GroupId = "npanday.test";

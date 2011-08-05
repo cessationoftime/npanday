@@ -21,19 +21,25 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using NUnit.Framework;
 using NPanday.VisualStudio.Addin;
 using NPanday.Artifact;
 using System.IO;
+using NPanday.Model;
+using Moq;
 
-namespace ClassLibrary1
+namespace ConnectTest
 {
     [TestFixture]
     public class ResyncArtifactSnapshot
     {
         public void artifactSetUp()
         {
-            ReferenceManager refMngr = new ReferenceManager();
+            Mock<PomXml> mockPom = new Mock<PomXml>("");
+            mockPom.Setup(x=>x.Exists).Returns(true);
+            
+            ReferenceManager refMngr = new ReferenceManager(new String[]{},mockPom.Object, "");
             Artifact artifact = new Artifact();
 
             artifact.GroupId = "npanday.artifact";

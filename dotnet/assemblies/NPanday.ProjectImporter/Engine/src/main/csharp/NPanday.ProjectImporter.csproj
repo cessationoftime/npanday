@@ -22,10 +22,11 @@ under the License.
     <ProjectGuid>{91FC215D-C041-4000-8F71-C04A9EEABE55}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <RootNameSpace>NPanday.ProjectImporter</RootNameSpace>
-    <AssemblyName>NPanday.ProjectImporterEngine</AssemblyName>
+    <AssemblyName>NPanday.ProjectImporter</AssemblyName>
     <BaseIntermediateOutputPath>..\..\..\target\obj\</BaseIntermediateOutputPath>
     <OutputType>Library</OutputType>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
     <OutputPath>..\..\..\target\</OutputPath>
@@ -84,8 +85,6 @@ under the License.
     <Compile Include="NPanday\ProjectImporter\NPandayImporter.cs" />
     <Compile Include="NPanday\ProjectImporter\Parser\SlnParser\ProjectSolutionParser.cs" />
     <Compile Include="NPanday\ProjectImporter\Parser\SlnParser\SolutionParser.cs" />
-    <Compile Include="NPanday\ProjectImporter\Parser\VisualStudioProjectTypes\VisualStudioProjectTypeEnum.cs" />
-    <Compile Include="NPanday\ProjectImporter\Parser\VisualStudioProjectTypes\VisualStudioProjectType.cs" />
     <Compile Include="NPanday\ProjectImporter\Parser\SlnParser\LexanState.cs" />
     <Compile Include="NPanday\ProjectImporter\Parser\SlnParser\LexicalAnalizer.cs" />
     <Compile Include="NPanday\ProjectImporter\Parser\SlnParser\Model\Global.cs" />

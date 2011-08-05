@@ -34,7 +34,8 @@ using NPanday.Model.Pom;
 using NPanday.Artifact;
 
 using NPanday.ProjectImporter.Converter.Algorithms;
-using NPanday.ProjectImporter.Parser.VisualStudioProjectTypes;
+using NPanday.VisualStudioProjectTypes;
+using NPanday.Model;
 
 
 /// Author: Leopoldo Lee Agdeppa III
@@ -165,7 +166,7 @@ namespace NPanday.ProjectImporter.Converter
                         );
                     DirectoryInfo pomDir = new DirectoryInfo(Path.GetDirectoryName(pomFileName));
 
-                    string moduleDir = PomHelperUtility.GetRelativePath(pomDir, prjDir);
+                    string moduleDir = PomXml.GetRelativePath(pomDir, prjDir);
                     if (string.IsNullOrEmpty(moduleDir))
                     {
                         moduleDir = ".";
@@ -179,7 +180,7 @@ namespace NPanday.ProjectImporter.Converter
 
                 if (writePom)
                 {
-                    PomHelperUtility.WriteModelToPom(new FileInfo(pomFileName), model);
+                    PomXml.WriteModelToPom(new FileInfo(pomFileName), model);
                 }
                 return model;
             }

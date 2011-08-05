@@ -36,6 +36,7 @@ using System.Reflection;
 using NPanday.ProjectImporter.Converter;
 
 using NPanday.ProjectImporter.Validator;
+using NPanday.Model;
 
 
 /// Author: Leopoldo Lee Agdeppa III
@@ -108,7 +109,7 @@ namespace NPanday.ProjectImporter.Converter.Algorithms
             bool msBuildPluginAdded = false;
             foreach (Compile compile in projectDigest.Compiles)
             {
-                string compilesFile = PomHelperUtility.GetRelativePath(baseDir, new FileInfo(compile.IncludeFullPath));
+                string compilesFile = PomXml.GetRelativePath(baseDir, new FileInfo(compile.IncludeFullPath));
                 compiles.Add(compilesFile);
 
                 // if it's a xaml file, include the auto-generated file in object\Debug\
@@ -171,11 +172,11 @@ namespace NPanday.ProjectImporter.Converter.Algorithms
             {
                 if (Path.IsPathRooted(projectDigest.AssemblyOriginatorKeyFile))
                 {
-                    AddPluginConfiguration(compilePlugin, "keyfile", PomHelperUtility.GetRelativePath(baseDir, new FileInfo(projectDigest.AssemblyOriginatorKeyFile)));
+                    AddPluginConfiguration(compilePlugin, "keyfile", PomXml.GetRelativePath(baseDir, new FileInfo(projectDigest.AssemblyOriginatorKeyFile)));
                 }
                 else
                 {
-                    AddPluginConfiguration(compilePlugin, "keyfile", PomHelperUtility.GetRelativePath(baseDir, new FileInfo(baseDir.FullName + @"\" + projectDigest.AssemblyOriginatorKeyFile)));
+                    AddPluginConfiguration(compilePlugin, "keyfile", PomXml.GetRelativePath(baseDir, new FileInfo(baseDir.FullName + @"\" + projectDigest.AssemblyOriginatorKeyFile)));
                 }
                 
             }
@@ -226,7 +227,7 @@ namespace NPanday.ProjectImporter.Converter.Algorithms
             
             if (writePom)
             {
-                PomHelperUtility.WriteModelToPom(new FileInfo(Path.Combine(projectDigest.FullDirectoryName, "pom.xml")), Model);
+                PomXml.WriteModelToPom(new FileInfo(Path.Combine(projectDigest.FullDirectoryName, "pom.xml")), Model);
             }
 
         }

@@ -42,6 +42,7 @@ using NPanday.Model.Pom;
 using NPanday.Model.Settings;
 
 using NPanday.Utils;
+using NPanday.Model;
 
 namespace NPanday.VisualStudio.Addin
 {
@@ -51,14 +52,14 @@ namespace NPanday.VisualStudio.Addin
         private ArtifactContext artifactContext;
         private Project project;
         private NPanday.Logging.Logger logger;
-        private PomHelperUtility pomUtility;
-        private FileInfo pom;
+        private PomXml pom;
+        
         public NPandaySignAssembly()
         {
             InitializeComponent();
         }
 
-        public NPandaySignAssembly(Project project, ArtifactContext container, Logger logger, FileInfo pom)
+        public NPandaySignAssembly(Project project, ArtifactContext container, Logger logger, PomXml pom)
         {
             this.project = project;
             this.logger = logger;
@@ -66,9 +67,8 @@ namespace NPanday.VisualStudio.Addin
 
             InitializeComponent();
             this.pom = pom;
-            this.pomUtility = new PomHelperUtility(pom);
 
-            this.txtBrowseAssemblySignKey.Text = pomUtility.CompilerPluginConfigurationKeyfile;
+            this.txtBrowseAssemblySignKey.Text = pom.CompilerPluginConfigurationKeyfile;
             
         }
 
@@ -78,7 +78,7 @@ namespace NPanday.VisualStudio.Addin
             try
             {
                 // set pom keyfile
-                pomUtility.CompilerPluginConfigurationKeyfile = txtBrowseAssemblySignKey.Text;
+                pom.CompilerPluginConfigurationKeyfile = txtBrowseAssemblySignKey.Text;
                 
 
                 // add the key to the vs project

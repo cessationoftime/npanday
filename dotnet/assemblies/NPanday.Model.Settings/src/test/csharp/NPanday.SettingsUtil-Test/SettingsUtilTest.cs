@@ -41,7 +41,7 @@ namespace NPanday.SettingsUtil_Test
         public void AddRepositoryToEmptyProfileTest()
         {
             settings = GetSettings("test-settings.xml");
-            
+
             Profile profile = new Profile();
             profile.id = defaultProfileId;
 
@@ -59,17 +59,17 @@ namespace NPanday.SettingsUtil_Test
             Assert.AreEqual("npanday.repo.0", repository.id);
             Assert.AreEqual(repoUrl1, repository.url);
         }
-        
+
         [Test]
         public void AddRepositoryToExistingProfileTest()
         {
             settings = GetSettings("test-settings-with-profile.xml");
 
-            Assert.AreEqual(1,settings.Profiles.Length);
+            Assert.AreEqual(1, settings.Profiles.Length);
 
             Profile profile = settings.Profiles[defaultProfileId];
             profile.Repositories.Add(repoUrl2, true, false);
-            
+
 
             Assert.AreEqual(1, settings.Profiles.Length, "Settings does not contain a profile");
             Assert.AreEqual(2, settings.Profiles[0].Repositories.Length);
@@ -89,13 +89,31 @@ namespace NPanday.SettingsUtil_Test
 
         private Settings GetSettings(string settingsXml)
         {
-
-            string path = new ProjectStructure("NPanday.Model.Settings").TestResource.Folder().FullName;
+            string path = getTestResourcesFolder("NPanday.Model.Settings");
 
             path = Path.Combine(path, "m2");
             settingsPath = new FileInfo(Path.Combine(path, settingsXml)).FullName;
 
             return Settings.Read(settingsPath);
         }
+        private string getTestResourcesFolder(string ProjectName)
+        {
+
+            DirectoryInfo workingDirectory = new DirectoryInfo(Environment.CurrentDirectory);
+
+            do
+            {
+                workingDirectory = workingDirectory.Parent;
+            } while (workingDirectory.Name != ProjectName);
+
+            //workingDirectory is now the project folder.
+
+            return workingDirectory.FullName + @"\src\test\resource";
+        }
     }
+
+
 }
+   
+
+

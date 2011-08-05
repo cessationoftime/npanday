@@ -32,6 +32,7 @@ using NPanday.Model.Pom;
 
 using NPanday.Artifact;
 using System.Windows.Forms;
+using NPanday.Model;
 
 /// Author: Leopoldo Lee Agdeppa III
 
@@ -317,7 +318,7 @@ namespace NPanday.ProjectImporter.Converter.Algorithms
                 {
                     DirectoryInfo dir = new DirectoryInfo(Path.GetDirectoryName(projectDigest.FullFileName));
                     FileInfo file = new FileInfo(mainPomFile);
-                    model.parent.relativePath = PomHelperUtility.GetRelativePath(dir, file);
+                    model.parent.relativePath = PomXml.GetRelativePath(dir, file);
                 }
             }
             else
@@ -930,14 +931,14 @@ namespace NPanday.ProjectImporter.Converter.Algorithms
             {
                 DirectoryInfo srcInclude = new DirectoryInfo(Path.GetDirectoryName(compile.IncludeFullPath));
 
-                common = PomHelperUtility.GetCommonDirectory(common, srcInclude);
+                common = PomXml.GetCommonDirectory(common, srcInclude);
 
             }
 
 
 
             DirectoryInfo prjDir = new DirectoryInfo(Path.GetDirectoryName(projectDigest.FullFileName));
-            string srcDir = PomHelperUtility.GetRelativePath(prjDir, common);
+            string srcDir = PomXml.GetRelativePath(prjDir, common);
 
             if (string.IsNullOrEmpty(srcDir))
             {

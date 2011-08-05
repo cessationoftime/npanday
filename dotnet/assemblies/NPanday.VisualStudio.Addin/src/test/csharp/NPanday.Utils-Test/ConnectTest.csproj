@@ -28,7 +28,7 @@ under the License.
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ClassLibrary1</RootNamespace>
     <AssemblyName>ConnectTest</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -49,6 +49,7 @@ under the License.
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -68,6 +69,9 @@ under the License.
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core-2.5.0.0-net4.0">
+      <HintPath>..\..\..\..\..\..\..\..\..\.m2\repository\Castle\Castle.Core\2.5.0.0\Castle.Core-2.5.0.0-net4.0.dll</HintPath>
+    </Reference>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -76,6 +80,9 @@ under the License.
     </Reference>
     <Reference Include="Extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\..\..\..\..\..\..\..\softexport\SoftExport.Testing\src\main\csharp\.references\Moq\Moq-4.0.10827\Moq.dll</HintPath>
     </Reference>
     <Reference Include="NPanday.Artifact, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -87,17 +94,6 @@ under the License.
     <Reference Include="NPanday.Model.Settings, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\NPanday.Model.Settings\target\NPanday.Model.Settings.dll</HintPath>
-    </Reference>
-    <Reference Include="NPanday.ProjectImporterEngine">
-      <HintPath>..\..\..\..\..\NPanday.ProjectImporter\Engine\target\NPanday.ProjectImporterEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="NPanday.Utils, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\NPanday.Utils\target\NPanday.Utils.dll</HintPath>
-    </Reference>
-    <Reference Include="NPanday.VisualStudio.Addin, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\target\NPanday.VisualStudio.Addin.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -140,6 +136,20 @@ under the License.
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\NPanday.ProjectImporter\Engine\src\main\csharp\NPanday.ProjectImporter.csproj">
+      <Project>{91FC215D-C041-4000-8F71-C04A9EEABE55}</Project>
+      <Name>NPanday.ProjectImporter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\NPanday.Utils\src\main\csharp\NPanday.Utils.csproj">
+      <Project>{CAA4864F-F4C8-4024-8535-8B8C112307CE}</Project>
+      <Name>NPanday.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\main\csharp\NPanday.VisualStudio.Addin.csproj">
+      <Project>{5BE35FDF-E620-4EB0-B9A8-2359C506D85D}</Project>
+      <Name>NPanday.VisualStudio.Addin</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -26,6 +26,7 @@ using NPanday.ProjectImporter.Validator;
 using System.IO;
 using NPanday.Model.Pom;
 using System.Xml;
+using NPanday.Model;
 
 /// Author: Leopoldo Lee Agdeppa III
 
@@ -79,7 +80,7 @@ namespace NPanday.ProjectImporter.Verifiers
                 return;
             }
 
-            NPanday.Model.Pom.Model model = NPanday.Utils.PomHelperUtility.ReadPomAsModel(pomFile);
+            NPanday.Model.Pom.Model model = PomXml.ReadPomAsModel(pomFile);
 
             projectDigest.UnitTest = IsProjectAnIntegrationTest(model);
 
@@ -101,7 +102,7 @@ namespace NPanday.ProjectImporter.Verifiers
                 throw new Exception("Project Must be Imported Atleast once before Re-Importing!");
             }
 
-            NPanday.Model.Pom.Model model = NPanday.Utils.PomHelperUtility.ReadPomAsModel(parentPomFile);
+            NPanday.Model.Pom.Model model = PomXml.ReadPomAsModel(parentPomFile);
 
             groupId = model.groupId;
             artifactId = model.artifactId;

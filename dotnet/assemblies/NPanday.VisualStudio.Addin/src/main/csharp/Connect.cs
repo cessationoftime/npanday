@@ -50,12 +50,13 @@ using NPanday.VisualStudio.Logging;
 
 using NPanday.Model.Settings;
 using NPanday.Model.Pom;
-
+using System.Linq;
 
 using NPanday.Utils;
 using System.Runtime.CompilerServices;
 using VSLangProj80;
 using System.Text;
+using NPanday.Model;
 
 
 #endregion
@@ -79,7 +80,6 @@ namespace NPanday.VisualStudio.Addin
         public const string MSG_Q_STOP_MAVEN_BUILD = "Do you want to stop the NPanday Build?";
         public const string MSG_EF_NOT_A_PROJECT_POM = "Not A Project Pom Error: {0} is not a project Pom, the pom is a parent pom type.";
         public const string MSG_EF_NOT_THE_PROJECT_POM = "The Pom may not be the project's Pom: Project Name: {0} is not equal to Pom artifactId: {1}";
-        public const string MSG_E_PARENTPOM_NOTFOUND = "parent-pom.xml Not Found";//from Parent pom.xml to paren-pom.xml
         public const string MSG_E_EXEC_ERROR = "NPanday Execution Error: ";
         public const string MSG_L_SHUTTING_DOWN_NPANDAY = "\nShutting Down NPanday Visual Studio Addin.";
         public const string MSG_L_SUCCESFULLY_SHUTDOWN = "\nNPanday Successfully Stopped.";//from ShutDown to Stopped
@@ -184,7 +184,7 @@ namespace NPanday.VisualStudio.Addin
 
         void SolutionEvents_Opened()
         {
-            if (_applicationObject != null && _applicationObject.Solution != null)
+            if (_dte2 != null && _dte2.Solution != null)
             {
                 attachReferenceEvent();
             }
@@ -192,7 +192,7 @@ namespace NPanday.VisualStudio.Addin
 
         void SolutionEvents_ProjectAdded(EnvDTE.Project project)
         {
-            if (_applicationObject != null && _applicationObject.Solution != null)
+            if (_dte2 != null && _dte2.Solution != null)
             {
                 attachReferenceEvent();
             }
@@ -201,9 +201,9 @@ namespace NPanday.VisualStudio.Addin
         //to hold eventhandler for projectItemsEvents
         void ProjectItemEvents_ItemAdded(ProjectItem projectItem)
         {
-            if (_applicationObject != null && projectItem!= null)
+            if (_dte2 != null && projectItem!= null)
             {
-                PomHelperUtility pomUtil = new PomHelperUtility(_applicationObject.Solution, CurrentSelectedProject);
+                PomXml pomUtil = CurrentSelectedSrcProject.ParentStructure.PomXml;
 
                 // added configuration when including web or service reference
 
@@ -272,11 +272,11 @@ namespace NPanday.VisualStudio.Addin
 
         void ProjectItemEvents_ItemRemoved(ProjectItem projectItem)
         {
-            if (_applicationObject != null && projectItem != null)
+            if (_dte2 != null && projectItem != null)
             {
-                if (_applicationObject != null && projectItem != null)
+                if (_dte2 != null && projectItem != null)
                 {
-                    PomHelperUtility pomUtil = new PomHelperUtility(_applicationObject.Solution, CurrentSelectedProject);
+                    PomXml pomUtil = CurrentSelectedSrcProject.ParentStructure.PomXml;
 
                     // remove web reference configuration in pom.xml when using "Exclude in Project"
 
@@ -313,9 +313,9 @@ namespace NPanday.VisualStudio.Addin
 
         void ProjectItemEvents_ItemRenamed(ProjectItem projectItem, string oldName)
         {
-            if (_applicationObject != null && projectItem != null)
+            if (_dte2 != null && projectItem != null)
             {
-                PomHelperUtility pomUtil = new PomHelperUtility(_applicationObject.Solution, CurrentSelectedProject);
+                PomXml pomUtil = CurrentSelectedSrcProject.ParentStructure.PomXml;
 
                 if (projectItem.Name.Contains(".cs") || projectItem.Name.Contains(".vb"))
                 {
@@ -408,21 +408,21 @@ namespace NPanday.VisualStudio.Addin
         /// <seealso class='IDTExtensibility2' />
         public void OnConnection(object application, ext_ConnectMode connectMode, object addInInst, ref Array custom)
         {
-
-            _applicationObject = (DTE2)application;
-            mavenRunner = new MavenRunner(_applicationObject);
+            
+            _dte2 = (DTE2)application;
+            mavenRunner = new MavenRunner(_dte2);
             mavenRunner.RunnerStopped += new EventHandler(mavenRunner_RunnerStopped);
             _addInInstance = (AddIn)addInInst;
             Command command = null;
             mavenConnected = true;
             
             //next two lines add a eventhandler to handle beforeclosing a solution
-            globalSolutionEvents = (EnvDTE.SolutionEvents)((Events2)_applicationObject.Events).SolutionEvents;
+            globalSolutionEvents = (EnvDTE.SolutionEvents)((Events2)_dte2.Events).SolutionEvents;
             globalSolutionEvents.BeforeClosing += new _dispSolutionEvents_BeforeClosingEventHandler(SolutionEvents_BeforeClosing);
             globalSolutionEvents.Opened += new _dispSolutionEvents_OpenedEventHandler(SolutionEvents_Opened);
             globalSolutionEvents.ProjectAdded += new _dispSolutionEvents_ProjectAddedEventHandler(SolutionEvents_ProjectAdded);
 
-            projectItemsEvents = (EnvDTE.ProjectItemsEvents)((Events2)_applicationObject.Events).ProjectItemsEvents;
+            projectItemsEvents = (EnvDTE.ProjectItemsEvents)((Events2)_dte2.Events).ProjectItemsEvents;
             projectItemsEvents.ItemAdded += new _dispProjectItemsEvents_ItemAddedEventHandler(ProjectItemEvents_ItemAdded);
             projectItemsEvents.ItemRemoved += new _dispProjectItemsEvents_ItemRemovedEventHandler(ProjectItemEvents_ItemRemoved);
             projectItemsEvents.ItemRenamed += new _dispProjectItemsEvents_ItemRenamedEventHandler(ProjectItemEvents_ItemRenamed);
@@ -431,7 +431,7 @@ namespace NPanday.VisualStudio.Addin
             {
 
                 object[] contextGUIDS = new object[] { };
-                Commands2 commands = (Commands2)_applicationObject.Commands;
+                Commands2 commands = (Commands2)_dte2.Commands;
                 string toolsMenuName;
 
                 try
@@ -441,7 +441,7 @@ namespace NPanday.VisualStudio.Addin
                     //  then add the command to that menu. You can find a list of all the top-level menus in the file
                     //  CommandBar.resx.
                     ResourceManager resourceManager = new ResourceManager("IDEAddin.CommandBar", Assembly.GetExecutingAssembly());
-                    CultureInfo cultureInfo = new System.Globalization.CultureInfo(_applicationObject.LocaleID);
+                    CultureInfo cultureInfo = new System.Globalization.CultureInfo(_dte2.LocaleID);
                     string resourceName = String.Concat(cultureInfo.TwoLetterISOLanguageName, "Tools");
                     toolsMenuName = resourceManager.GetString(resourceName);
                 }
@@ -454,7 +454,7 @@ namespace NPanday.VisualStudio.Addin
 
                 //Place the command on the tools menu.
                 //Find the MenuBar command bar, which is the top-level command bar holding all the main menu items:
-                Microsoft.VisualStudio.CommandBars.CommandBar menuBarCommandBar = ((Microsoft.VisualStudio.CommandBars.CommandBars)_applicationObject.CommandBars)["MenuBar"];
+                Microsoft.VisualStudio.CommandBars.CommandBar menuBarCommandBar = ((Microsoft.VisualStudio.CommandBars.CommandBars)_dte2.CommandBars)["MenuBar"];
 
                 //Find the Tools command bar on the MenuBar command bar:
                 CommandBarControl toolsControl = menuBarCommandBar.Controls[toolsMenuName];
@@ -506,45 +506,11 @@ namespace NPanday.VisualStudio.Addin
             //stopButton.Enabled = false;
         }
 
-        private const string WEB_PROJECT_KIND_GUID = "{E24C65DC-7377-472B-9ABA-BC803B73C61A}";
+        
 
-        private const string WEB_APPLICATION_KIND_GUID = "{349C5851-65DF-11DA-9384-00065B846F21}";
+        
 
-        public static bool IsWebProject(Project project)
-        {
-            bool isWebProject = false;
-            // make sure there's a project item
-            if (project == null)
-            {
-                return isWebProject;
-            } 
-
-            // compare the project kind to the web project guid
-            if (String.Compare(project.Kind, WEB_PROJECT_KIND_GUID, true) == 0)
-            {
-                isWebProject = true;
-            }
-
-            // compare the project kind to the web project guid
-            if (String.Compare(project.Kind, WEB_APPLICATION_KIND_GUID, true) == 0)
-            {
-                isWebProject = true;
-            }
-
-            return (isWebProject);
-        }
-
-        private const string FOLDER_KIND_GUID = "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}";
-
-        public static bool IsFolder(Project project)
-        {
-            // make sure there's a project item
-            if (project == null)
-                return false;
-
-            // compare the project kind to the folder guid
-            return (String.Compare(project.Kind, FOLDER_KIND_GUID, true) == 0);
-        }
+      
 
         void InsertKeyTag(string filePath, string key)
         {
@@ -592,7 +558,7 @@ namespace NPanday.VisualStudio.Addin
 
         void SigningEvents_SignatureAdded()
         {
-            Solution2 solution = (Solution2)_applicationObject.Solution;
+            Solution2 solution = (Solution2)_dte2.Solution;
             string pomFilePath = string.Empty;
             foreach (Project project in solution.Projects)
             {
@@ -685,21 +651,21 @@ namespace NPanday.VisualStudio.Addin
 
             //References
             referenceEvents = new List<ReferencesEvents>();
-            Solution2 solution = (Solution2)_applicationObject.Solution;
+         //   Solution2 solution = (Solution2)_dte2.Solution;
 
             this.wsRefWatcher = new List<WebServicesReferenceWatcher>();
             this.svRefWatcher = new List<WebServicesReferenceWatcher>();
 
-            foreach (Project project in solution.Projects)
+            foreach (SrcStructure src in structure.Sources)
             {
                 projectRefEventLoaded = true;
 
                 string referenceFolder = string.Empty;
                 string serviceRefFolder = string.Empty;
 
-                if (IsWebProject(project))
+                if (src.isWebProject)
                 {
-                    VsWebSite.VSWebSite website = (VsWebSite.VSWebSite)project.Object;
+                    VsWebSite.VSWebSite website = src.getWebSiteObject;
                     referenceFolder = Path.Combine(website.Project.FullName, "App_WebReferences");
                     if (!Directory.Exists(referenceFolder))
                     {
@@ -710,7 +676,7 @@ namespace NPanday.VisualStudio.Addin
                 {
                     try
                     {
-                        VSProject2 classProject = (VSProject2)project.Object;
+                        VSProject2 classProject = src.getProjectObject;
                         referenceEvents.Add(classProject.Events2.ReferencesEvents);
                         classProject.Events2.ReferencesEvents.ReferenceRemoved
                             += new _dispReferencesEvents_ReferenceRemovedEventHandler(ReferencesEvents_ReferenceRemoved);
@@ -721,8 +687,9 @@ namespace NPanday.VisualStudio.Addin
                         {
                             webReferenceFolder = classProject.CreateWebReferencesFolder();
                         }
-                        referenceFolder = Path.Combine(Path.GetDirectoryName(project.FullName), webReferenceFolder.Name);
-                        serviceRefFolder = Path.Combine(Path.GetDirectoryName(project.FullName), Messages.MSG_D_SERV_REF);
+                        
+                        referenceFolder = Path.Combine(Path.GetDirectoryName(src.SrcProject.FullName), webReferenceFolder.Name);
+                        serviceRefFolder = Path.Combine(Path.GetDirectoryName(src.SrcProject.FullName), Messages.MSG_D_SERV_REF);
 
                         if (!Directory.Exists(serviceRefFolder))
                         {
@@ -797,7 +764,7 @@ namespace NPanday.VisualStudio.Addin
                 }
 
                 //check if reference is already in pom
-                PomHelperUtility pomUtil = new PomHelperUtility(_applicationObject.Solution, CurrentSelectedProject);
+                PomXml pomUtil = CurrentSelectedSrcProject.ParentStructure.PomXml;
                 if (pomUtil.IsPomDependency(pReference.Name))
                 {
                     return;
@@ -831,8 +798,8 @@ namespace NPanday.VisualStudio.Addin
                         // TODO: below will force VS build the referenced project, let's disable this for awhile
                         //pReference.SourceProject.DTE.ExecuteCommand("ClassViewContextMenus.ClassViewProject.Build", string.Empty);
 
-                        NPanday.Model.Pom.Model solutionPOM = NPanday.Utils.PomHelperUtility.ReadPomAsModel(CurrentSolutionPom);
-                        NPanday.Model.Pom.Model projectPOM = NPanday.Utils.PomHelperUtility.ReadPomAsModel(CurrentSelectedProjectPom);
+                        NPanday.Model.Pom.Model solutionPOM = structure.PomXml.ReadPomAsModel();
+                        NPanday.Model.Pom.Model projectPOM = CurrentSelectedProjectPom.ReadPomAsModel();
 
                         refGroupId = solutionPOM.groupId;
 
@@ -913,7 +880,7 @@ namespace NPanday.VisualStudio.Addin
         {
             try
             {
-                PomHelperUtility pomUtil = new PomHelperUtility(_applicationObject.Solution, CurrentSelectedProject);
+                PomXml pomUtil = CurrentSelectedSrcProject.ParentStructure.PomXml;
                 if (Path.GetExtension(e.Name).ToLower() == ".dll" || Path.GetExtension(e.Name).ToLower() == ".exe")
                 {
                     pomUtil.RemovePomDependency(Path.GetFileNameWithoutExtension(e.Name));
@@ -934,9 +901,9 @@ namespace NPanday.VisualStudio.Addin
                 WebReferencesClasses wrc = new WebReferencesClasses(e.ReferenceDirectory);
                 wrc.WaitForClasses(e.Namespace);
 
-                e.Init(projectReferenceFolder(CurrentSelectedProject));
-                PomHelperUtility pomUtil = new PomHelperUtility(_applicationObject.Solution, CurrentSelectedProject);
-                lock (typeof(PomHelperUtility))
+                e.Init(CurrentSelectedSrcProject.SrcProject.FullName);
+                PomXml pomUtil = CurrentSelectedSrcProject.ParentStructure.PomXml;
+                lock (typeof(PomXml))
                 {
                     pomUtil.RenameWebReference(e.ReferenceDirectory, e.OldNamespace, e.Namespace, e.WsdlFile, string.Empty);
                 }
@@ -951,9 +918,9 @@ namespace NPanday.VisualStudio.Addin
         {
             try
             {
-                e.Init(projectReferenceFolder(CurrentSelectedProject));
-                PomHelperUtility pomUtil = new PomHelperUtility(_applicationObject.Solution, CurrentSelectedProject);
-                lock (typeof(PomHelperUtility))
+                e.Init(CurrentSelectedSrcProject.createWebReferencesFolder());
+                PomXml pomUtil = CurrentSelectedSrcProject.ParentStructure.PomXml;
+                lock (typeof(PomXml))
                 {
                     pomUtil.RemoveWebReference(e.ReferenceDirectory, e.Namespace);
                 }
@@ -968,16 +935,16 @@ namespace NPanday.VisualStudio.Addin
         {
             try
             {
-                Solution2 solution = (Solution2)_applicationObject.Solution;
+                Solution2 solution = (Solution2)_dte2.Solution;
                 
                 //wait for the files to be created
                 WebReferencesClasses wrc = new WebReferencesClasses(e.ReferenceDirectory);
                 wrc.WaitForClasses(e.Namespace);
                 
-                e.Init(projectReferenceFolder(CurrentSelectedProject));
+                e.Init(CurrentSelectedSrcProject.createWebReferencesFolder());
 
-                PomHelperUtility pomUtil = new PomHelperUtility(_applicationObject.Solution, CurrentSelectedProject);
-                lock (typeof(PomHelperUtility))
+                PomXml pomUtil = CurrentSelectedSrcProject.ParentStructure.PomXml;
+                lock (typeof(PomXml))
                 {
                     pomUtil.AddWebReference(e.Namespace, e.WsdlFile, string.Empty, logger);
                 }
@@ -995,8 +962,8 @@ namespace NPanday.VisualStudio.Addin
             try
             {
                 System.Threading.Thread.Sleep(1500);
-                e.Init(Path.Combine(Path.GetDirectoryName(CurrentSelectedProject.FullName), Messages.MSG_D_SERV_REF));
-                PomHelperUtility pomUtil = new PomHelperUtility(_applicationObject.Solution, CurrentSelectedProject);
+                e.Init(Path.Combine(Path.GetDirectoryName(CurrentSelectedSrcProject.FullName), Messages.MSG_D_SERV_REF));
+                PomXml pomUtil = CurrentSelectedSrcProject.ParentStructure.PomXml;
                 pomUtil.RenameWebReference(e.ReferenceDirectory, e.OldNamespace, e.Namespace, e.WsdlFile, string.Empty);
             }
             catch (Exception ex)
@@ -1009,8 +976,8 @@ namespace NPanday.VisualStudio.Addin
         {
             try
             {
-                e.Init(Path.Combine(Path.GetDirectoryName(CurrentSelectedProject.FullName), Messages.MSG_D_SERV_REF));
-                PomHelperUtility pomUtil = new PomHelperUtility(_applicationObject.Solution, CurrentSelectedProject);
+                e.Init(Path.Combine(Path.GetDirectoryName(CurrentSelectedSrcProject.FullName), Messages.MSG_D_SERV_REF));
+                PomXml pomUtil = CurrentSelectedSrcProject.ParentStructure.PomXml;
                 pomUtil.RemoveWebReference(e.ReferenceDirectory, e.Namespace);
             }
             catch (Exception ex)
@@ -1024,11 +991,11 @@ namespace NPanday.VisualStudio.Addin
             try
             {
                 System.Threading.Thread.Sleep(2500);
-                Solution2 solution = (Solution2)_applicationObject.Solution;
+                Solution2 solution = (Solution2)_dte2.Solution;
 
-                string path = Path.Combine(Path.GetDirectoryName(CurrentSelectedProject.FullName), Messages.MSG_D_SERV_REF);
+                string path = Path.Combine(Path.GetDirectoryName(CurrentSelectedSrcProject.FullName), Messages.MSG_D_SERV_REF);
                 e.Init(path);
-                PomHelperUtility pomUtil = new PomHelperUtility(_applicationObject.Solution, CurrentSelectedProject);
+                PomXml pomUtil = CurrentSelectedSrcProject.ParentStructure.PomXml;
 
                 pomUtil.AddWebReference(e.Namespace, e.WsdlFile, string.Empty, logger);
             }
@@ -1038,40 +1005,15 @@ namespace NPanday.VisualStudio.Addin
             }
         }
 
-        void addWebReference(PomHelperUtility pomUtil, string name, string path, string output)
+        void addWebReference(PomXml pomUtil, string name, string path, string output)
         {
-            lock (typeof(PomHelperUtility))
+            lock (typeof(PomXml))
             {
                 pomUtil.AddWebReference(name, path, output, logger);
             }
         }
 
-        string projectReferenceFolder(Project project)
-        {
-            string wsPath = null;
-            if (IsWebProject(project))
-            {
-                VsWebSite.VSWebSite website = (VsWebSite.VSWebSite)project.Object;
-                wsPath = Path.Combine(website.Project.FullName, "App_WebReferences");
-                if (!Directory.Exists(wsPath))
-                {
-                    Directory.CreateDirectory(wsPath);
-                }
-            }
-            else
-            {
-                VSProject2 vsProject = (VSProject2)project.Object;
-
-                ProjectItem webReferenceFolder = vsProject.WebReferencesFolder;
-                if (webReferenceFolder == null)
-                {
-                    webReferenceFolder = vsProject.CreateWebReferencesFolder();
-                }
-
-                wsPath = Path.Combine(Path.GetDirectoryName(project.FullName), webReferenceFolder.Name);
-            }
-            return wsPath;
-        }
+       
 
         private void launchNPandayBuildSystem()
         {
@@ -1082,7 +1024,7 @@ namespace NPanday.VisualStudio.Addin
                 return;
             }
 
-            Window win = _applicationObject.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
+            Window win = _dte2.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
             OutputWindow outputWindow = (OutputWindow)win.Object;
             OutputWindowPanes panes = outputWindow.OutputWindowPanes;
 
@@ -1114,13 +1056,15 @@ namespace NPanday.VisualStudio.Addin
 
 
 
-            EnvDTE80.Windows2 windows2 = (EnvDTE80.Windows2)_applicationObject.Windows;
+            EnvDTE80.Windows2 windows2 = (EnvDTE80.Windows2)_dte2.Windows;
 
-            DTE2 dte2 = _applicationObject;
+
+            structure = new SolutionStructure(_dte2.Solution);
+
 
             addReferenceControls = new List<CommandBarButton>();
             buildControls = new List<CommandBarControl>();
-            foreach (CommandBar commandBar in (CommandBars)dte2.CommandBars)
+            foreach (CommandBar commandBar in (CommandBars)_dte2.CommandBars)
             {
 				IList<CommandBarControl> barControls = new List<CommandBarControl>();
 				foreach (CommandBarControl control in commandBar.Controls)
@@ -1173,83 +1117,84 @@ namespace NPanday.VisualStudio.Addin
                 }
             }
             nunitControls = new List<CommandBarButton>();
-            Window solutionExplorerWindow = dte2.Windows.Item(Constants.vsWindowKindSolutionExplorer);
-            _selectionEvents = dte2.Events.SelectionEvents;
+            Window solutionExplorerWindow = _dte2.Windows.Item(Constants.vsWindowKindSolutionExplorer);
+            _selectionEvents = _dte2.Events.SelectionEvents;
             _selectionEvents.OnChange += new _dispSelectionEvents_OnChangeEventHandler(this.OnChange);
             _npandayLaunched = true;
             outputWindowPane.Clear();
             string NPandayVersion = _addInInstance.Description.Substring(0,_addInInstance.Description.IndexOf(" provides"));
             outputWindowPane.OutputString(string.Format(Messages.MSG_L_NPANDAY_ADDIN_STARTED,NPandayVersion));
 
-            if (_applicationObject.Solution != null)
+            if (_dte2.Solution != null)
                 attachReferenceEvent();
         }
 
-        CommandBarButton cleanButton;
-        CommandBarButton testButton;
-        CommandBarButton installButton;
-        CommandBarButton deployButton;
-        CommandBarButton buildButton;
-        CommandBarButton resetReferenceButton;
+       
 
+        enum CurrentProjectMenu {
+             clean,
+        test,
+        install,
+        deploy,
+        build,
+        resetReference,
+        pom
+        }
+
+        Dictionary<CurrentProjectMenu, CommandBarButton> currentProjectMenu = new Dictionary<CurrentProjectMenu, CommandBarButton>();
         private void createCurrentProjectMenu(CommandBarPopup ctl)
         {
-            resetReferenceButton = (CommandBarButton)ctl.Controls.Add(MsoControlType.msoControlButton,
+
+
+            foreach (CurrentProjectMenu b in (CurrentProjectMenu[])Enum.GetValues(typeof(CurrentProjectMenu)))
+            {
+                CommandBarButton cbb = (CommandBarButton)ctl.Controls.Add(MsoControlType.msoControlButton,
                 System.Type.Missing, System.Type.Missing, 1, true);
-            resetReferenceButton.Visible = true;
-            resetReferenceButton.Caption = "Resync References";
-            resetReferenceButton.Click += new _CommandBarButtonEvents_ClickEventHandler(resetReferenceButton_Click);
+                currentProjectMenu.Add(b, cbb);
+                cbb.Visible = true;
+                buildControls.Add(cbb);
+            }
 
-            cleanButton = (CommandBarButton)ctl.Controls.Add(MsoControlType.msoControlButton,
-                System.Type.Missing, System.Type.Missing, 1, true);
-            cleanButton.Caption = Messages.MSG_C_CLEAN;
-            cleanButton.Visible = true;
-            cleanButton.Click += new _CommandBarButtonEvents_ClickEventHandler(cbClean_Click);
-
+            
+          currentProjectMenu[CurrentProjectMenu.resetReference].Caption = "Resync References";
+          currentProjectMenu[CurrentProjectMenu.resetReference].Click += new _CommandBarButtonEvents_ClickEventHandler(resetReferenceButton_Click);
 
 
-            testButton = (CommandBarButton)ctl.Controls.Add(MsoControlType.msoControlButton,
-                System.Type.Missing, System.Type.Missing, 1, true);
-            testButton.Caption = Messages.MSG_C_TEST;
-            testButton.Visible = true;
-            testButton.Click += new _CommandBarButtonEvents_ClickEventHandler(cbTest_Click);
 
-            installButton = (CommandBarButton)ctl.Controls.Add(MsoControlType.msoControlButton,
-                System.Type.Missing, System.Type.Missing, 1, true);
-            installButton.Caption = Messages.MSG_C_INSTALL;
-            installButton.Visible = true;
-            installButton.Click += new _CommandBarButtonEvents_ClickEventHandler(cbInstall_Click);
-
-            deployButton = (CommandBarButton)ctl.Controls.Add(MsoControlType.msoControlButton,
-                System.Type.Missing, System.Type.Missing, 1, true);
-            deployButton.Caption = Messages.MSG_C_DEPLOY;
-            deployButton.Visible = true;
-            deployButton.Click += new _CommandBarButtonEvents_ClickEventHandler(cbDeploy_Click);
-            buildButton = (CommandBarButton)ctl.Controls.Add(MsoControlType.msoControlButton,
-                System.Type.Missing, System.Type.Missing, 1, true);
-            buildButton.Caption = Messages.MSG_C_BUILD;
-            buildButton.Visible = true;
-            //buildButton.FaceId = 645;
-            buildButton.Click += new _CommandBarButtonEvents_ClickEventHandler(cbBuild_Click);
+          currentProjectMenu[CurrentProjectMenu.clean].Caption = Messages.MSG_C_CLEAN;
+          currentProjectMenu[CurrentProjectMenu.clean].Click += new _CommandBarButtonEvents_ClickEventHandler(cbClean_Click);
 
 
-            buildControls.Add(buildButton);
-            buildControls.Add(installButton);
-            buildControls.Add(deployButton);
-            buildControls.Add(cleanButton);
-            buildControls.Add(testButton);
-            buildControls.Add(resetReferenceButton);
+
+          currentProjectMenu[CurrentProjectMenu.test].Caption = Messages.MSG_C_TEST;
+          currentProjectMenu[CurrentProjectMenu.test].Click += new _CommandBarButtonEvents_ClickEventHandler(cbTest_Click);
+
+          currentProjectMenu[CurrentProjectMenu.install].Caption = Messages.MSG_C_INSTALL;
+          currentProjectMenu[CurrentProjectMenu.install].Click += new _CommandBarButtonEvents_ClickEventHandler(cbInstall_Click);
+
+
+          currentProjectMenu[CurrentProjectMenu.deploy].Caption = Messages.MSG_C_DEPLOY;
+          currentProjectMenu[CurrentProjectMenu.deploy].Click += new _CommandBarButtonEvents_ClickEventHandler(cbDeploy_Click);
+
+
+          currentProjectMenu[CurrentProjectMenu.build].Caption = Messages.MSG_C_BUILD;
+          currentProjectMenu[CurrentProjectMenu.build].Click += new _CommandBarButtonEvents_ClickEventHandler(cbBuild_Click);
+
+
+          currentProjectMenu[CurrentProjectMenu.pom].Caption = "Open Pom File";
+          currentProjectMenu[CurrentProjectMenu.pom].Click += new _CommandBarButtonEvents_ClickEventHandler(cbOpenPom_Click);
+
+
         }
 
         void resetReferenceButton_Click(CommandBarButton Ctrl, ref bool CancelDefault)
         {
             refManagerHasError = false;
-            outputWindowPane.OutputString(string.Format("\n[INFO] Re-syncing artifacts in {0} project...\n ", CurrentSelectedProject.Name));
+            outputWindowPane.OutputString(string.Format("\n[INFO] Re-syncing artifacts in {0} project...\n ", CurrentSelectedSrcProject.Name));
             try
             {
-                IReferenceManager refmanager = new ReferenceManager();
+                IReferenceManager refmanager = CurrentSelectedSrcProject.ReferenceManager;
                 refmanager.OnError += new EventHandler<ReferenceErrorEventArgs>(refmanager_OnError);
-                refmanager.Initialize((VSProject2)CurrentSelectedProject.Object);
                 refmanager.ResyncArtifacts(logger);
 
                 if (!refManagerHasError)
@@ -1296,9 +1241,22 @@ namespace NPanday.VisualStudio.Addin
         CommandBarButton ctlSettingsXml;
         CommandBarButton ctlSignAssembly;
         CommandBarButton ctlProjectImport;
-
+        CommandBarButton ctlOpenPom;
         private void createNPandayMenus(CommandBar commandBar, CommandBarControl control)
         {
+            ctlOpenPom = (CommandBarButton)
+           commandBar.Controls.Add(MsoControlType.msoControlButton,
+                                     System.Type.Missing,
+                                     System.Type.Missing,
+                                     control.Index + 1,
+                                     true);
+            ctlOpenPom.Click +=
+                new _CommandBarButtonEvents_ClickEventHandler(cbOpenSolutionPom_Click);
+            ctlOpenPom.Caption =  "Open Solution pom.xml";
+            ctlOpenPom.Visible = true;
+
+
+
             ctlSettingsXml = (CommandBarButton)
             commandBar.Controls.Add(MsoControlType.msoControlButton,
                                       System.Type.Missing,
@@ -1400,20 +1358,15 @@ namespace NPanday.VisualStudio.Addin
             outputWindowPane.OutputString("\n[INFO] Re-syncing artifacts in all projects... ");
             try
             {
-                if (_applicationObject.Solution != null)
-                {
-                    Solution2 solution = (Solution2)_applicationObject.Solution;
-                    foreach (Project project in solution.Projects)
+                    foreach (SrcStructure src in structure.Sources)
                     {
-                        if (!IsWebProject(project) && !IsFolder(project) && project.Object != null)
+                        if (!src.isWebProject && !src.isFolder)
                         {
-                            IReferenceManager mgr = new ReferenceManager();
+                            IReferenceManager mgr = src.ReferenceManager;
                             mgr.OnError += new EventHandler<ReferenceErrorEventArgs>(refmanager_OnError);
-                            mgr.Initialize((VSProject2)project.Object);
                             mgr.ResyncArtifacts(logger);
                             mgr = null;
                         }
-                    }
                 }
                 if (!refManagerHasError)
                 {
@@ -1456,7 +1409,7 @@ namespace NPanday.VisualStudio.Addin
                 if (!mavenConnected)
                     return;
 
-                PomHelperUtility pomUtil = new PomHelperUtility(_applicationObject.Solution, pReference.ContainingProject);
+                PomXml pomUtil = structure.getSource(pReference.ContainingProject).ParentStructure.PomXml;
                 string refName = pReference.Name;
                 if (pReference.Type == prjReferenceType.prjReferenceTypeActiveX && refName.ToLower().StartsWith("interop.", true, CultureInfo.InvariantCulture))
                     refName = refName.Substring(8);
@@ -1478,13 +1431,13 @@ namespace NPanday.VisualStudio.Addin
                 attachReferenceEvent();
             }
 
-            foreach (SelectedItem item in _applicationObject.SelectedItems)
+            foreach (SelectedItem item in _dte2.SelectedItems)
             {
                 if (item.Name.EndsWith("Test.cs"))
                 {
                     if (nunitControls.Count == 0)
                     {
-                        DTE2 dte2 = _applicationObject;
+                        DTE2 dte2 = _dte2;
                         foreach (CommandBar commandBar in (CommandBars)dte2.CommandBars)
                         {
                             foreach (CommandBarControl control in commandBar.Controls)
@@ -1556,13 +1509,13 @@ namespace NPanday.VisualStudio.Addin
         public void OnDisconnection(ext_DisconnectMode disconnectMode, ref Array custom)
         {
             //check if NPanday is already closed
-            if ( _applicationObject == null )
+            if ( _dte2 == null )
             {
                 return;
             }
             mavenConnected = false;
             //remove maven menus
-            DTE2 dte2 = _applicationObject;
+            DTE2 dte2 = _dte2;
 
             addReferenceControls = new List<CommandBarButton>();
             buildControls = new List<CommandBarControl>();
@@ -1626,13 +1579,13 @@ namespace NPanday.VisualStudio.Addin
             {
                 this.OnBeginShutdown(ref custom);
             }
-            _applicationObject = null;
+            _dte2 = null;
         }
 
         //used for Unit Testing on Disconnect
         protected bool IsApplicationObjectNull()
         {
-            if (_applicationObject == null)
+            if (_dte2 == null)
             {
                 return true;
             }
@@ -1667,22 +1620,14 @@ namespace NPanday.VisualStudio.Addin
 
         #region NPandayBuild
 
-        /// <summary>
-        /// Checks the currently selected pom file if there is a vb project in it.
-        /// </summary>
-        private bool IsVbProject(Project project)
-        {
-            if (project.UniqueName.Contains("vbproj"))
-                return true;
-            return false;
-        }
+    
 
         private CommandBarControl GetSaveAllControl()
         {
             CommandBarControl saveCtrl = null;
-            EnvDTE80.Windows2 windows2 = (EnvDTE80.Windows2)_applicationObject.Windows;
+            EnvDTE80.Windows2 windows2 = (EnvDTE80.Windows2)_dte2.Windows;
 
-            DTE2 dte2 = _applicationObject;
+            DTE2 dte2 = _dte2;
 
 
             foreach (CommandBar commandBar in (CommandBars)dte2.CommandBars)
@@ -1703,7 +1648,7 @@ namespace NPanday.VisualStudio.Addin
         private void AutoImport()
         {
             string warningMsg = string.Empty;
-            Solution2 solution = (Solution2)_applicationObject.Solution;
+            Solution2 solution = (Solution2)_dte2.Solution;
             ProjectImporter.NPandayImporter.ReImportProject(solution.FullName, ref warningMsg);
         }
 
@@ -1725,13 +1670,12 @@ namespace NPanday.VisualStudio.Addin
         private void NPandayBuildSelectedProject(String goal)
         {
             SaveAllDocuments();
-            FileInfo pomFile = CurrentSelectedProjectPom;
-            Project project = CurrentSelectedProject;
-            PomHelperUtility pomUtility = new PomHelperUtility(pomFile);
+            Project project = CurrentSelectedSrcProject.SrcProject;
+            PomXml pomUtility = CurrentSelectedProjectPom;
 
             string errStr = null;
 
-            if (pomFile==null)
+            if (CurrentSelectedProjectPom == null)
             {
                 errStr = string.Format("Pom File {0} not found!", project.FullName.Substring(0,project.FullName.LastIndexOf('\\'))+"\\pom.xml");
                 throw new Exception(errStr);
@@ -1741,7 +1685,7 @@ namespace NPanday.VisualStudio.Addin
 
             if ("pom".Equals(pomUtility.Packaging, StringComparison.OrdinalIgnoreCase))
             {
-                errStr = string.Format(Messages.MSG_EF_NOT_A_PROJECT_POM, pomFile);
+                errStr = string.Format(Messages.MSG_EF_NOT_A_PROJECT_POM, CurrentSelectedProjectPom);
             }
 
             if (!string.IsNullOrEmpty(errStr))
@@ -1772,22 +1716,20 @@ namespace NPanday.VisualStudio.Addin
                 //never update
             }
 
-            executeBuildCommand(pomFile, goal);
+            executeBuildCommand(structure.PomXml, goal);
         }
 
         private void NPandayBuildAllProjects(String goal)
         {
             SaveAllDocuments();
-            FileInfo pomFile = CurrentSolutionPom;
-            PomHelperUtility pomUtility = new PomHelperUtility(pomFile);
 
             try
             {
-                Solution2 solution = (Solution2)_applicationObject.Solution;
+                
                 bool asked = false;
-                foreach (Project project in solution.Projects)
+                foreach (SrcStructure src in structure.Sources)
                 {
-                    if (!IsWebProject(project) && ProjectHasWebReferences(project))
+                    if (!src.isWebProject && ProjectHasWebReferences(src.SrcProject))
                     {
                         if (!asked && MessageBox.Show("Do you want to update webservice references?", "NPanday Build", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                         {
@@ -1796,7 +1738,7 @@ namespace NPanday.VisualStudio.Addin
                         else
                             asked = true;
 
-                        UpdateWebReferences(project);
+                        UpdateWebReferences(src.SrcProject);
                     }
 
                 }
@@ -1806,7 +1748,7 @@ namespace NPanday.VisualStudio.Addin
             {
             }
 
-            executeBuildCommand(pomFile, goal);
+            executeBuildCommand(structure.PomXml, goal);
 
         }
 
@@ -1814,7 +1756,7 @@ namespace NPanday.VisualStudio.Addin
 
         #region executeBuildCommand(FileInfo,string)
         [MethodImpl(MethodImplOptions.Synchronized)]
-        private void executeBuildCommand(FileInfo pomFile, String goal)
+        private void executeBuildCommand(PomXml pomFile, String goal)
         {
 
             try
@@ -1864,92 +1806,49 @@ namespace NPanday.VisualStudio.Addin
         }
         #endregion
 
-        public FileInfo CurrentSolutionPom
+      
+        public PomXml CurrentSelectedProjectPom
         {
             get
             {
-                try
-                {
-                    FileInfo parentPomFile = new FileInfo(Path.GetDirectoryName(_applicationObject.Solution.FileName) + @"\parent-pom.xml");
-                    FileInfo pomFile = new FileInfo(Path.GetDirectoryName(_applicationObject.Solution.FileName) + @"\pom.xml");
+                return CurrentSelectedSrcProject.ParentStructure.PomXml;
+                //try
+                //{
+                //    PomXml pomFile = PomXml.FindPomFileUntil(
+                //new FileInfo(CurrentSelectedSrcProject.SrcProject.FullName).Directory,
+                //new FileInfo(_dte2.Solution.FileName).Directory);
 
-                    PomHelperUtility parentPomUtil = new PomHelperUtility(parentPomFile);
-                    PomHelperUtility pomUtil = new PomHelperUtility(pomFile);
+                //    if (pomFile != null)
+                //    {
+                //        return pomFile;
+                //    }
 
-                    if (!parentPomFile.Exists)
-                    {
-                        return pomFile;
-                    }
-                    else if (pomFile.Exists || parentPomFile.Exists)
-                    {
-                        if (!"pom".Equals(pomUtil.Packaging)
-                            && parentPomFile.Exists
-                            && "pom".Equals(parentPomUtil.Packaging))
-                        {
-                            return parentPomFile;
-                        }
-                        return pomFile;
-                    }
-                    else
-                    {
-                        //MessageBox.Show("Parent pom.xml Not Found! ",
-                        //"File Not Found:",
-                        //MessageBoxButtons.OK,
-                        //MessageBoxIcon.Error);
-                        throw new Exception(Messages.MSG_E_PARENTPOM_NOTFOUND);
-                    }
-                }
-                catch (Exception)
-                {
-                    //MessageBox.Show("Locating Parent pom.xml Error: " + e.Message, 
-                    //    "Locating Parent pom.xml Error:",
-                    //    MessageBoxButtons.OK,
-                    //    MessageBoxIcon.Error);
-                    throw;
-                }
-            }
-        }
+                //    return null;
 
-        public FileInfo CurrentSelectedProjectPom
-        {
-            get
-            {
-
-                try
-                {
-                    FileInfo pomFile = PomHelperUtility.FindPomFileUntil(
-                new FileInfo(CurrentSelectedProject.FullName).Directory,
-                new FileInfo(_applicationObject.Solution.FileName).Directory);
-
-                    if (pomFile != null)
-                    {
-                        return pomFile;
-                    }
-
-                    return null;
-
-                }
-                catch
-                {
-                    return null;
-                }
+                //}
+                //catch
+                //{
+                //    return null;
+                //}
             }
 
         }
 
-        public Project CurrentSelectedProject
+        public SrcStructure CurrentSelectedSrcProject
         {
             get
             {
-                foreach (Project project in (Array)_applicationObject.ActiveSolutionProjects)
+                foreach (Project project in (Array)_dte2.ActiveSolutionProjects)
                 {
-                    return project;
+                    return structure.getSource(project);
                 }
 
                 return null;
 
             }
         }
+
+      
 
 
         #region cbRunUnitTest_Click(CommandBarButton,bool)
@@ -2065,7 +1964,33 @@ namespace NPanday.VisualStudio.Addin
         }
         #endregion
 
-        #region cbBuild_Click(CommandBarButton,bool)
+
+
+        private void cbOpenPom_Click(CommandBarButton btn, ref bool Cancel)
+        {
+            try
+            {
+                _dte2.ExecuteCommand("File.OpenFile", CurrentSelectedProjectPom.FullName);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(Messages.MSG_E_EXEC_ERROR + e.Message, Messages.MSG_C_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void cbOpenSolutionPom_Click(CommandBarButton btn, ref bool Cancel)
+        {
+            try
+            {
+                _dte2.ExecuteCommand("File.OpenFile", structure.PomXml.FullName);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(Messages.MSG_E_EXEC_ERROR + e.Message, Messages.MSG_C_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+       
         private void cbBuild_Click(CommandBarButton btn, ref bool Cancel)
         {
             try
@@ -2077,7 +2002,7 @@ namespace NPanday.VisualStudio.Addin
                 MessageBox.Show(Messages.MSG_E_EXEC_ERROR + e.Message, Messages.MSG_C_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        #endregion
+        
 
         #region cbTest_Click(CommandBarButton,bool)
         private void cbTest_Click(CommandBarButton btn, ref bool Cancel)
@@ -2117,11 +2042,11 @@ namespace NPanday.VisualStudio.Addin
         #region cbShowAddArtifactsForm_Click(CommandBarButton,bool)
         private void cbShowAddArtifactsForm_Click(CommandBarButton btn, ref bool Cancel)
         {
+            
             //First selected project
-            foreach (Project project in (Array)_applicationObject.ActiveSolutionProjects)
+            foreach (Project project in (Array)_dte2.ActiveSolutionProjects)
             {
-                FileInfo currentPom = this.CurrentSelectedProjectPom;
-                if (currentPom == null || Path.GetDirectoryName(currentPom.FullName) != Path.GetDirectoryName(project.FullName))
+                if (CurrentSelectedProjectPom == null)
                 {
                     DialogResult result = MessageBox.Show("Pom file not found, do you want to import the projects first before adding Maven Artifact?", "Add Maven Artifact", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
                     if (result == DialogResult.Cancel)
@@ -2129,19 +2054,20 @@ namespace NPanday.VisualStudio.Addin
                     else if (result == DialogResult.OK)
                     {
                         SaveAllDocuments();
-                        NPandayImportProjectForm frm = new NPandayImportProjectForm(_applicationObject, logger);
+                        NPandayImportProjectForm frm = new NPandayImportProjectForm(_dte2, logger);
                         frm.SetOutputWindowPane(outputWindowPane);
                         frm.ShowDialog();
-                        currentPom = this.CurrentSelectedProjectPom;
+                       
 
                         // if import failed
-                        if (currentPom == null || Path.GetDirectoryName(currentPom.FullName) != Path.GetDirectoryName(project.FullName))
+                        if (CurrentSelectedProjectPom == null)
                         {
                             return;
                         }
                     }
                 }
-                AddArtifactsForm form = new AddArtifactsForm(project, container, logger, currentPom);
+
+                AddArtifactsForm form = new AddArtifactsForm(structure.getSource(project), container, logger, CurrentSelectedProjectPom);
                 form.Show();
                 break;
             }
@@ -2164,7 +2090,7 @@ namespace NPanday.VisualStudio.Addin
 
 
             //First selected project
-            foreach (Project project in (Array)_applicationObject.ActiveSolutionProjects)
+            foreach (Project project in (Array)_dte2.ActiveSolutionProjects)
             {
                 NPandaySignAssembly frm = new NPandaySignAssembly(project, container, logger, CurrentSelectedProjectPom);
                 frm.ShowDialog();
@@ -2180,7 +2106,7 @@ namespace NPanday.VisualStudio.Addin
         private void cbChangeProjectImportForm_Click(CommandBarButton btn, ref bool Cancel)
         {
             SaveAllDocuments();
-            NPandayImportProjectForm frm = new NPandayImportProjectForm(_applicationObject, logger);
+            NPandayImportProjectForm frm = new NPandayImportProjectForm(_dte2, logger);
             frm.SetOutputWindowPane(outputWindowPane);
             frm.ShowDialog();
         }
@@ -2246,7 +2172,8 @@ namespace NPanday.VisualStudio.Addin
         #endregion
 
         #region Fields
-        private DTE2 _applicationObject;
+        private DTE2 _dte2;
+        private SolutionStructure structure;
         private AddIn _addInInstance;
         private OutputWindowPane outputWindowPane;
         private NPanday.Logging.Logger logger;
@@ -2294,7 +2221,7 @@ namespace NPanday.VisualStudio.Addin
 
         //public bool RemovePomWebReferenceInfo(string webRefNamespace)
         //{
-        //    PomHelperUtility pomUtil = new PomHelperUtility(_applicationObject.Solution, CurrentSelectedProject);
+        //    PomXml pomUtil = new PomXml(_applicationObject.Solution, CurrentSelectedProject);
         //    pomUtil.RemoveWebReference(webRefNamespace);
         //    return true;
 

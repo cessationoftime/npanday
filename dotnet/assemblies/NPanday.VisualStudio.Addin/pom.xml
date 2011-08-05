@@ -28,43 +28,59 @@ under the License.
   <groupId>org.apache.npanday.visualstudio</groupId>
   <artifactId>NPanday.VisualStudio.Addin</artifactId>  
   <packaging>visual-studio-addin</packaging>  
-  <name>NPanday :: VisualStudio Addin</name>  
-  <dependencies>
+  <name>NPanday :: VisualStudio Addin</name>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.npanday.plugins</groupId>
+        <artifactId>maven-compile-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <frameworkVersion>4.0</frameworkVersion>
+          <testFameworkVersion>4.0</testFameworkVersion>
+          <parameters>
+            <parameter>/nowarn:1591,1592,1573,1571,1570,1572</parameter>
+          </parameters>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+    <dependencies>
     <dependency> 
       <groupId>org.apache.npanday.plugins</groupId>
       <artifactId>NPanday.Plugin</artifactId>  
       <version>1.4.1-incubating-SNAPSHOT</version>
-      <type>library</type> 
+      <type>dotnet-library</type> 
     </dependency>  
     <dependency> 
       <groupId>org.apache.npanday</groupId>
       <artifactId>NPanday.Logging</artifactId>  
       <version>1.4.1-incubating-SNAPSHOT</version>
-      <type>library</type> 
+      <type>dotnet-library</type> 
     </dependency>  
     <dependency> 
       <groupId>org.apache.npanday</groupId>
       <artifactId>NPanday.Model.Pom</artifactId>  
       <version>1.4.1-incubating-SNAPSHOT</version>
-      <type>library</type> 
+      <type>dotnet-library</type> 
     </dependency>  
     <dependency> 
       <groupId>org.apache.npanday.visualstudio</groupId>
       <artifactId>NPanday.VisualStudio</artifactId>  
       <version>1.4.1-incubating-SNAPSHOT</version>
-      <type>library</type> 
+      <type>dotnet-library</type> 
     </dependency>  
     <dependency> 
       <groupId>org.apache.npanday</groupId>
       <artifactId>NPanday.Artifact</artifactId>  
       <version>1.4.1-incubating-SNAPSHOT</version>
-      <type>library</type> 
+      <type>dotnet-library</type> 
     </dependency>  
     <dependency> 
       <groupId>org.apache.npanday</groupId>
       <artifactId>NPanday.Model.Settings</artifactId>  
       <version>1.4.1-incubating-SNAPSHOT</version>
-      <type>library</type>  
+      <type>dotnet-library</type>  
     </dependency>  
     <dependency> 
       <groupId>Microsoft.VisualStudio.CommandBars</groupId>  
@@ -113,20 +129,36 @@ under the License.
       <artifactId>VsWebSite.Interop</artifactId>  
       <type>gac</type>  
       <version>8.0.0.0</version>  
-      <classifier>b03f5f7f11d50a3a</classifier> 
+      <classifier>b03f5f7f11d50a3a</classifier>
     </dependency>  
     <dependency> 
       <groupId>org.apache.npanday.visualstudio</groupId>
       <artifactId>NPanday.ProjectImporterEngine</artifactId>  
       <version>1.4.1-incubating-SNAPSHOT</version>
-      <type>library</type> 
+      <type>dotnet-library</type> 
     </dependency>  
     <dependency> 
       <groupId>org.apache.npanday</groupId>
       <artifactId>NPanday.Utils</artifactId>  
       <version>1.4.1-incubating-SNAPSHOT</version>
-      <type>library</type>  
-    </dependency> 
+      <type>dotnet-library</type>  
+    </dependency>
+    <dependency>
+      <groupId>Moq</groupId>
+      <artifactId>Moq</artifactId>
+      <version>4.0.10827</version>
+      <classifier>net4.0</classifier>
+      <type>dotnet-library</type>
+      <scope>test</scope>
+    </dependency>
+      <dependency>
+        <groupId>Castle</groupId>
+        <artifactId>Castle.Core</artifactId>
+        <version>2.5.0.0</version>
+        <classifier>net4.0</classifier>
+        <type>dotnet-library</type>
+        <scope>test</scope>
+      </dependency>
   </dependencies>  
   <profiles> 
     <profile>

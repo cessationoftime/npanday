@@ -26,6 +26,7 @@ using System.IO;
 using Microsoft.Build.BuildEngine;
 using NPanday.Utils;
 using NPanday.ProjectImporter.Digest.Model;
+using NPanday.Model;
 
 /// Author: Leopoldo Lee Agdeppa III
 
@@ -120,8 +121,8 @@ namespace NPanday.ProjectImporter.Validator
 
         static bool IsSameDirectory(string dir1, string dir2)
         {
-            string str1 = NPanday.Utils.PomHelperUtility.NormalizeFileToWindowsStyle(Path.GetFullPath(dir1));
-            string str2 = NPanday.Utils.PomHelperUtility.NormalizeFileToWindowsStyle(Path.GetFullPath(dir2));
+            string str1 = PomXml.NormalizeFileToWindowsStyle(Path.GetFullPath(dir1));
+            string str2 = PomXml.NormalizeFileToWindowsStyle(Path.GetFullPath(dir2));
             return str1.Equals(str2, StringComparison.OrdinalIgnoreCase);
         }
     }

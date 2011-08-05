@@ -25,13 +25,13 @@ using NUnit.Framework;
 using NPanday.Utils;
 using System.IO;
 using NPanday.Model;
-using ResourceFolder = NPanday.Model.ProjectStructure.Res.ResourceFolder;
+
 namespace ConnectTest.UtilsTest
 {
     [TestFixture]
     public class MavenResxPluginConfigurationTest
     {
-        private PomHelperUtility pomCopy;
+        private PomXml pomCopy;
         private String pomPath;
         private String pomCopyPath;
 
@@ -45,14 +45,13 @@ namespace ConnectTest.UtilsTest
         [SetUp]
         public void TestSetUp()
         {
-            ResourceFolder classLibraryResource = new ProjectStructure("NPanday.VisualStudio.Addin")
-               .TestResource.Folder("ClassLibrary1\\ClassLibrary1\\");
+            ResourceFolder classLibraryResource = new SimpleSrcStructure(MainOrTest.Test, "NPanday.VisualStudio.Addin").Resources.Folder("ClassLibrary1\\ClassLibrary1\\");
             pomPath = classLibraryResource.File("pom.xml").FullName;
            
 
             pomCopyPath = pomPath.Replace("pom.xml", "pomCopy.xml");
 
-            pomCopy = new PomHelperUtility(pomCopyPath);
+            pomCopy = new PomXml(pomCopyPath);
 
             File.Copy(pomPath, pomCopyPath);
         }

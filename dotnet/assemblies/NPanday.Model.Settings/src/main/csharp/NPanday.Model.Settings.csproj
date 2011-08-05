@@ -28,7 +28,8 @@ under the License.
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NPanday.Model.Settings</RootNamespace>
     <AssemblyName>NPanday.Model.Settings</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,7 +56,6 @@ under the License.
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NPanday\Model\Settings\ProfileList.cs" />
-    <Compile Include="NPanday\Model\ProjectStructure.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NPanday\Model\Settings\RepositoryList.cs" />
     <Compile Include="NPanday\Model\Settings\Settings.cs">

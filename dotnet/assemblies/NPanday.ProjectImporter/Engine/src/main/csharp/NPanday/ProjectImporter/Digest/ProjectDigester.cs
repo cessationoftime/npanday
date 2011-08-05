@@ -26,7 +26,7 @@ using Microsoft.Build.BuildEngine;
 using NPanday.ProjectImporter.Digest.Model;
 using NPanday.ProjectImporter.Digest.Algorithms;
 
-using NPanday.ProjectImporter.Parser.VisualStudioProjectTypes;
+using NPanday.VisualStudioProjectTypes;
 
 /// Author: Leopoldo Lee Agdeppa III
 

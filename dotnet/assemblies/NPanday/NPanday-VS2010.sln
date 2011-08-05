@@ -25,6 +25,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPanday.VisualStudio.Addin.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPanday.SettingsUtil-Test", "..\NPanday.Model.Settings\src\test\csharp\NPanday.SettingsUtil-Test\NPanday.SettingsUtil-Test.csproj", "{FEEC01CB-2577-4059-9609-531A4913BCDA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectTest", "..\NPanday.VisualStudio.Addin\src\test\csharp\NPanday.Utils-Test\ConnectTest.csproj", "{CD2E70EA-44C3-4AA0-9701-F99181332E8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPanday.ProjectImporterEngine-Test", "..\NPanday.ProjectImporter\Engine\src\test\csharp\NPanday.ProjectImporterEngine-Test.csproj", "{AB99C7DE-1065-452F-A49D-937F1FD18E81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,10 +48,8 @@ Global
 		{B760D54F-22AC-43E7-A0A6-DE313D4663AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B760D54F-22AC-43E7-A0A6-DE313D4663AF}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{B760D54F-22AC-43E7-A0A6-DE313D4663AF}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{09887944-425A-45A0-870C-AE4C16DA63DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{09887944-425A-45A0-870C-AE4C16DA63DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{09887944-425A-45A0-870C-AE4C16DA63DF}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{09887944-425A-45A0-870C-AE4C16DA63DF}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{09887944-425A-45A0-870C-AE4C16DA63DF}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{09887944-425A-45A0-870C-AE4C16DA63DF}.Release|Any CPU.ActiveCfg = Debug|x86
 		{5BE35FDF-E620-4EB0-B9A8-2359C506D85D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5BE35FDF-E620-4EB0-B9A8-2359C506D85D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BE35FDF-E620-4EB0-B9A8-2359C506D85D}.Release|Any CPU.ActiveCfg = Debug|Any CPU
@@ -80,6 +82,14 @@ Global
 		{FEEC01CB-2577-4059-9609-531A4913BCDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEEC01CB-2577-4059-9609-531A4913BCDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEEC01CB-2577-4059-9609-531A4913BCDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD2E70EA-44C3-4AA0-9701-F99181332E8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD2E70EA-44C3-4AA0-9701-F99181332E8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD2E70EA-44C3-4AA0-9701-F99181332E8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD2E70EA-44C3-4AA0-9701-F99181332E8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB99C7DE-1065-452F-A49D-937F1FD18E81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB99C7DE-1065-452F-A49D-937F1FD18E81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB99C7DE-1065-452F-A49D-937F1FD18E81}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB99C7DE-1065-452F-A49D-937F1FD18E81}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

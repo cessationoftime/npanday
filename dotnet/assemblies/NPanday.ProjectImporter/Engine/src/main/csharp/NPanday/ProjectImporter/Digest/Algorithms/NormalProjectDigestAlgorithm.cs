@@ -24,10 +24,11 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using Microsoft.Build.BuildEngine;
-using NPanday.ProjectImporter.Parser.VisualStudioProjectTypes;
+using NPanday.VisualStudioProjectTypes;
 using NPanday.ProjectImporter.Digest.Model;
 
 using NPanday.Utils;
+using NPanday.Model;
 
 
 
@@ -66,7 +67,7 @@ namespace NPanday.ProjectImporter.Digest.Algorithms
             FileInfo existingPomFile = new FileInfo(Path.Combine(projectDigest.FullDirectoryName, "pom.xml"));
             if (existingPomFile.Exists)
             {
-                projectDigest.ExistingPom = PomHelperUtility.ReadPomAsModel(existingPomFile);
+                projectDigest.ExistingPom = PomXml.ReadPomAsModel(existingPomFile);
             }
 
             if ((projectDigest.ProjectType & VisualStudioProjectTypeEnum.Windows__CSharp) == VisualStudioProjectTypeEnum.Windows__CSharp)

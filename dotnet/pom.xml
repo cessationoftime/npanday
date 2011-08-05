@@ -42,7 +42,8 @@ under the License.
         <artifactId>maven-compile-plugin</artifactId>  
         <extensions>true</extensions>  
         <configuration> 
-          <frameworkVersion>2.0.50727</frameworkVersion>
+          <frameworkVersion>3.5</frameworkVersion>
+          <testFameworkVersion>3.5</testFameworkVersion>
             <parameters>
               <parameter>/nowarn:1591,1592,1573,1571,1570,1572</parameter>
             </parameters>          

@@ -36,6 +36,7 @@ using System.Reflection;
 using NPanday.ProjectImporter.Converter;
 
 using NPanday.ProjectImporter.Validator;
+using NPanday.Model;
 
 
 /// Author: Leopoldo Lee Agdeppa III
@@ -80,7 +81,7 @@ namespace NPanday.ProjectImporter.Converter.Algorithms
 
             if (writePom)
             {
-                PomHelperUtility.WriteModelToPom(new FileInfo(Path.GetDirectoryName(projectDigest.FullFileName) + @"\pom.xml"), Model);
+                PomXml.WriteModelToPom(new FileInfo(Path.GetDirectoryName(projectDigest.FullFileName) + @"\pom.xml"), Model);
             }
 
 

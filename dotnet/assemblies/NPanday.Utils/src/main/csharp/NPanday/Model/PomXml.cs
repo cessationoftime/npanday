@@ -34,34 +34,55 @@ using NPanday.Model.Settings;
 
 using System.Windows.Forms;
 using EnvDTE;
+using NPanday.Utils;
 
-namespace NPanday.Utils
+namespace NPanday.Model
 {
-    public class PomHelperUtility
+    public class PomXml
     {
 
-        private FileInfo pom;
+        string filePath;
+        FileInfo fileInfo;
         public bool isWebRefEmpty = false;
 
         RspUtility rspUtil = new RspUtility();
 
-        public PomHelperUtility(Solution solution, Project project)
+        public PomXml(string pomFilePath)
         {
-            FileInfo pomFile = PomHelperUtility.FindPomFileUntil(
-                new FileInfo(project.FullName).Directory,
-                new FileInfo(solution.FileName).Directory);
-
-            this.pom = pomFile;
+            this.filePath = pomFilePath;
         }
 
-        public PomHelperUtility(string pom)
+        public virtual bool Exists
         {
-            this.pom = new FileInfo(pom);
+            get
+            {
+                return File.Exists(filePath);
+            }
         }
 
-        public PomHelperUtility(FileInfo pom)
+        private FileInfo FileInfo
         {
-            this.pom = pom;
+            get
+            {
+                if (fileInfo == null)
+                {
+                    fileInfo = new FileInfo(filePath);
+                }
+                return fileInfo;
+            }
+        }
+
+        public string FullName
+        {
+            get
+            {
+                return filePath;
+            }
+        }
+
+        public override string ToString()
+        {
+            return filePath;
         }
 
         public DirectoryInfo SourceDirectory
@@ -191,7 +212,7 @@ namespace NPanday.Utils
             {
                 foreach (string defDir in defaultDirs)
                 {
-                    DirectoryInfo d = new DirectoryInfo(pom.Directory.FullName + @"\" + defDir);
+                    DirectoryInfo d = new DirectoryInfo(FileInfo.Directory.FullName + @"\" + defDir);
                     if (d.Exists)
                     {
                         src = defDir;
@@ -214,7 +235,7 @@ namespace NPanday.Utils
             // if relative path, concatinate the folder of the pom
             if (IsRelativePath(src))
             {
-                src = pom.Directory.FullName + @"\" + src;
+                src = FileInfo.Directory.FullName + @"\" + src;
             }
             return new DirectoryInfo(new DirectoryInfo(src).FullName);
         }
@@ -252,7 +273,7 @@ namespace NPanday.Utils
                 string key = GetNPandayCompilerPluginConfigurationValue("keyfile");
                 if (IsRelativePath(key))
                 {
-                    return NormalizeFileToWindowsStyle(new FileInfo(pom.Directory.FullName + @"\" + key).FullName);
+                    return NormalizeFileToWindowsStyle(new FileInfo(FileInfo.Directory.FullName + @"\" + key).FullName);
                 }
 
                 return key;
@@ -268,7 +289,7 @@ namespace NPanday.Utils
                 string str = "";
                 if (IsRelativePath(value))
                 {
-                    FileInfo f = new FileInfo(pom.Directory + @"\" + value);
+                    FileInfo f = new FileInfo(FileInfo.Directory + @"\" + value);
                     str = GetRelativePathFromPom(f);
 
                 }
@@ -292,19 +313,19 @@ namespace NPanday.Utils
             get
             {
                 XmlDocument xmlDocument = new XmlDocument();
-                xmlDocument.Load(pom.FullName);
+                xmlDocument.Load(this.FullName);
                 return xmlDocument.DocumentElement.NamespaceURI;
             }
         }
 
         public NPanday.Model.Pom.Model ReadPomAsModel()
         {
-            return PomHelperUtility.ReadPomAsModel(this.pom);
+            return PomXml.ReadPomAsModel(this.FileInfo);
         }
 
         public static NPanday.Model.Pom.Model ReadPomAsModel(FileInfo pomfile)
         {
-            return PomHelperUtility.ReadPomAsModel(pomfile, null);
+            return PomXml.ReadPomAsModel(pomfile, null);
         }
 
         public static NPanday.Model.Pom.Model ReadPomAsModel(FileInfo pomfile, NPanday.Logging.Logger logger)        
@@ -372,16 +393,16 @@ namespace NPanday.Utils
 
         public void WriteModelToPom(NPanday.Model.Pom.Model model)
         {
-            PomHelperUtility.WriteModelToPom(this.pom, model);
+            PomXml.WriteModelToPom(FileInfo, model);
         }
 
 		public bool IsWebReferenceEmpty()
         {
             string[] directories;
-            if (Directory.Exists(pom.DirectoryName + "/Web References"))
-                directories = Directory.GetDirectories(pom.DirectoryName + "/Web References");
+            if (Directory.Exists(FileInfo.DirectoryName + "/Web References"))
+                directories = Directory.GetDirectories(FileInfo.DirectoryName + "/Web References");
             else
-                directories = Directory.GetDirectories(pom.DirectoryName + "/App_WebReferences");
+                directories = Directory.GetDirectories(FileInfo.DirectoryName + "/App_WebReferences");
 
             bool isEmpty = false;
             if (directories.Length == 0)
@@ -414,7 +435,7 @@ namespace NPanday.Utils
 		
         public static void WriteModelToPom(FileInfo pomFile, NPanday.Model.Pom.Model model)
         {
-            PomHelperUtility.WriteModelToPom(pomFile, model, null);
+            PomXml.WriteModelToPom(pomFile, model, null);
         }
 
         public static void WriteModelToPom(FileInfo pomFile, NPanday.Model.Pom.Model model, NPanday.Logging.Logger logger)
@@ -572,13 +593,13 @@ namespace NPanday.Utils
             try
             {
 
-                if (!pom.Exists)
+                if (!this.Exists)
                 {
-                    throw new Exception("Pom file not found: File = " + pom.FullName);
+                    throw new Exception("Pom file not found: File = " + this.FullName);
                 }
 
 
-                String pomFileName = pom.FullName;
+                String pomFileName = this.FullName;
 
                 System.Xml.XmlDocument xmldoc = new System.Xml.XmlDocument();
                 xmldoc.Load(pomFileName);
@@ -612,17 +633,17 @@ namespace NPanday.Utils
 
         public string GetRelativePathFromPom(FileInfo file)
         {
-            return PomHelperUtility.GetRelativePath(pom.Directory, file);
+            return PomXml.GetRelativePath(FileInfo.Directory, file);
         }
 
         public string GetRelativePathFromPom(DirectoryInfo dir)
         {
-            return PomHelperUtility.GetRelativePath(pom.Directory, dir);
+            return PomXml.GetRelativePath(FileInfo.Directory, dir);
         }
 
         public string GetRelativePathFromPom(string filename)
         {
-            return PomHelperUtility.GetRelativePath(pom.Directory, new FileInfo(filename));
+            return PomXml.GetRelativePath(FileInfo.Directory, new FileInfo(filename));
         }
 
 
@@ -850,52 +871,52 @@ namespace NPanday.Utils
 
 
 
-        public static FileInfo FindPomFileUntil(DirectoryInfo start, DirectoryInfo until)
-        {
-            if (start == null || until == null)
-            {
-                throw new NullReferenceException("Null Reference Exception: start and until parameter must not be null");
-            }
+        //public static PomXml FindPomFileUntil(DirectoryInfo start, DirectoryInfo until)
+        //{
+        //    if (start == null || until == null)
+        //    {
+        //        throw new NullReferenceException("Null Reference Exception: start and until parameter must not be null");
+        //    }
 
-            DirectoryInfo currentDir = start;
-            FileInfo pomFile = new FileInfo(currentDir + @"\pom.xml");
+        //    DirectoryInfo currentDir = start;
+        //    PomXml pomFile = new PomXml(currentDir + @"\pom.xml");
 
-            // check if both parent and current directory is in the same folder
-            if (!until.Root.FullName.Equals(start.Root.FullName, StringComparison.OrdinalIgnoreCase) || !until.Exists || !start.Exists)
-            {
-                // they are not in the same root directory or, until or start directory does not exists
-                throw new Exception(string.Format("Folders are not on the same drive: {0} is not in the same disk drive with {1}", until.FullName, start.FullName));
+        //    // check if both parent and current directory is in the same folder
+        //    if (!until.Root.FullName.Equals(start.Root.FullName, StringComparison.OrdinalIgnoreCase) || !until.Exists || !start.Exists)
+        //    {
+        //        // they are not in the same root directory or, until or start directory does not exists
+        //        throw new Exception(string.Format("Folders are not on the same drive: {0} is not in the same disk drive with {1}", until.FullName, start.FullName));
 
-            }
+        //    }
 
-            if (!start.FullName.StartsWith(until.FullName))
-            {
-                // start is not a sub Directory of until
-                throw new Exception(string.Format("Folder is not a subdirectory: {0} is not a subdirectory of {1}", start.FullName, until.FullName));
-            }
-
-
-            while (!until.FullName.Equals(currentDir.FullName, StringComparison.OrdinalIgnoreCase))
-            {
-
-                pomFile = new FileInfo(currentDir.FullName + @"\pom.xml");
-
-                if (pomFile.Exists)
-                {
-                    return pomFile;
-                }
-                currentDir = currentDir.Parent;
-            }
+        //    if (!start.FullName.StartsWith(until.FullName))
+        //    {
+        //        // start is not a sub Directory of until
+        //        throw new Exception(string.Format("Folder is not a subdirectory: {0} is not a subdirectory of {1}", start.FullName, until.FullName));
+        //    }
 
 
-            pomFile = new FileInfo(currentDir.FullName + @"\pom.xml");
-            if (pomFile.Exists)
-            {
-                return pomFile;
-            }
+        //    while (!until.FullName.Equals(currentDir.FullName, StringComparison.OrdinalIgnoreCase))
+        //    {
 
-            throw new Exception(string.Format("Pom file not found: pom.xml not fould from folder: {0} down to folder: {1}", start.FullName, until.FullName));
-        }
+        //        pomFile = new PomXml(currentDir.FullName + @"\pom.xml");
+
+        //        if (pomFile.Exists)
+        //        {
+        //            return pomFile;
+        //        }
+        //        currentDir = currentDir.Parent;
+        //    }
+
+
+        //    pomFile = new PomXml(currentDir.FullName + @"\pom.xml");
+        //    if (pomFile.Exists)
+        //    {
+        //        return pomFile;
+        //    }
+
+        //    throw new Exception(string.Format("Pom file not found: pom.xml not fould from folder: {0} down to folder: {1}", start.FullName, until.FullName));
+        //}
 
         public static string GetRelativePath(DirectoryInfo baseDir, DirectoryInfo dir)
         {
@@ -1098,12 +1119,12 @@ namespace NPanday.Utils
                                         }
                                     }
                                 }
-                                DirectoryInfo fullPath = new FileInfo(Path.Combine(pom.Directory.FullName, path.Trim('\r', ' ', '\n'))).Directory;
+                                DirectoryInfo fullPath = new FileInfo(Path.Combine(FileInfo.Directory.FullName, path.Trim('\r', ' ', '\n'))).Directory;
                                 foreach (FileInfo file in fullPath.GetFiles("*.cs"))
                                 {
                                     XmlNode node = xmlDocument.CreateNode(XmlNodeType.Element, "includeSource", @"http://maven.apache.org/POM/4.0.0");
 
-                                    node.InnerText = GetRelativePath(pom.Directory, file);
+                                    node.InnerText = GetRelativePath(FileInfo.Directory, file);
                                     node.InnerText = node.InnerText.Replace("\\", "/");
                                     if (!elem.InnerText.Contains(node.InnerText))
                                     {
@@ -1114,7 +1135,7 @@ namespace NPanday.Utils
                                 {
                                     XmlNode node = xmlDocument.CreateNode(XmlNodeType.Element, "includeSource", @"http://maven.apache.org/POM/4.0.0");
 
-                                    node.InnerText = GetRelativePath(pom.Directory, file);
+                                    node.InnerText = GetRelativePath(FileInfo.Directory, file);
                                     node.InnerText = node.InnerText.Replace("\\", "/");
                                     if (!elem.InnerText.Contains(node.InnerText))
                                     {
@@ -1702,7 +1723,7 @@ namespace NPanday.Utils
                                 XmlElement elem = xmlDocument.CreateElement("includeSources", @"http://maven.apache.org/POM/4.0.0");
 
                                 //LOOP THROUGH EXISTING AND ADD IF ITS NOT A WEBREFERENCE
-                                string compareStr = GetRelativePath(pom.Directory, new DirectoryInfo(path));
+                                string compareStr = GetRelativePath(FileInfo.Directory, new DirectoryInfo(path));
                                 foreach (XmlNode n in elems[count].ChildNodes)
                                 {
                                     if ("includeSource".Equals(n.Name))
@@ -1802,7 +1823,7 @@ namespace NPanday.Utils
         public bool isWebRefExisting(string name)
         {
             bool exists = false;
-            StreamReader sr = new StreamReader(pom.FullName);
+            StreamReader sr = new StreamReader(this.FullName);
             String temp = sr.ReadLine();
 
             try

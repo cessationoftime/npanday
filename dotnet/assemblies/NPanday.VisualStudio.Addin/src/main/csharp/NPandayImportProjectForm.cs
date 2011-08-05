@@ -37,6 +37,7 @@ using Microsoft.Win32;
 using NPanday.ProjectImporter;
 using NPanday.Logging;
 using System.Xml;
+using NPanday.Model;
 
 namespace NPanday.VisualStudio.Addin
 {
@@ -356,16 +357,15 @@ namespace NPanday.VisualStudio.Addin
         {
             if (applicationObject.Solution != null)
             {
-                Solution2 solution = (Solution2)applicationObject.Solution;
+                SolutionStructure structure = new SolutionStructure((Solution)applicationObject.Solution);
                 IList<IReferenceManager> refManagers = new List<IReferenceManager>();
-                foreach (Project project in solution.Projects)
+                foreach (SrcStructure src in structure.Sources)
                 {
-                    if (!isWebProject(project) && !isFolder(project) && project.Object != null)
+                    if (!src.isWebProject && !src.isFolder)
                     {
-                        IReferenceManager mgr = new ReferenceManager();
                         try
                         {
-                            mgr.Initialize((VSLangProj80.VSProject2)project.Object);
+                            IReferenceManager mgr = src.ReferenceManager;
                             refManagers.Add(mgr);
                         }
                         catch

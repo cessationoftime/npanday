@@ -43,8 +43,8 @@ namespace ConnectTest.UtilsTest
         public MavenSettingsConfigurationTest()
         {
 
-            settingsPathOriginal = new ProjectStructure("NPanday.VisualStudio.Addin")
-               .TestResource.File("m2\\test-settings.xml").FullName;
+            settingsPathOriginal = new SimpleSrcStructure(MainOrTest.Test, "NPanday.VisualStudio.Addin")
+               .Resources.File("m2\\test-settings.xml").FullName;
           
             settingsPath = settingsPathOriginal.Replace("test-settings.xml", "test-settings2.xml");
 
@@ -52,8 +52,8 @@ namespace ConnectTest.UtilsTest
 
             addArtifactsFrm = new AddArtifactsForm();
             addArtifactsFrm.addProfilesTag(settingsPath);
-
-            settings = SettingsUtil.ReadSettings(settingsPath);
+            
+            settings = Settings.Read(settingsPath);
         }
 
         [Test]

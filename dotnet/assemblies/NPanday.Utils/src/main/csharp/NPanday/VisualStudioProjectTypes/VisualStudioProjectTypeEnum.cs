@@ -24,7 +24,7 @@ using System.Text;
 
 /// Author: Leopoldo Lee Agdeppa III
 
-namespace NPanday.ProjectImporter.Parser.VisualStudioProjectTypes
+namespace NPanday.VisualStudioProjectTypes
 {
     [Flags]
     public enum VisualStudioProjectTypeEnum : long

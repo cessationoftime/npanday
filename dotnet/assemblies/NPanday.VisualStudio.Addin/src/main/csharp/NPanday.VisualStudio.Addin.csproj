@@ -101,7 +101,6 @@ under the License.
     <Compile Include="NPandaySignAssembly.Designer.cs">
       <DependentUpon>NPandaySignAssembly.cs</DependentUpon>
     </Compile>
-    <Compile Include="ReferenceManager.cs" />
     <Compile Include="RemoveArtifactsForm.cs">
       <SubType>Form</SubType>
     </Compile>

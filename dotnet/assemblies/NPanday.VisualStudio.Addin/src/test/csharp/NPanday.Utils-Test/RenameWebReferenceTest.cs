@@ -25,13 +25,12 @@ using NUnit.Framework;
 using System.IO;
 using NPanday.Utils;
 using NPanday.Model;
-using ResourceFolder = NPanday.Model.ProjectStructure.Res.ResourceFolder;
 namespace ConnectTest.UtilsTest
 {
     [TestFixture]
     public class RenameWebReferenceTest
     {
-        private PomHelperUtility pomCopy;
+        private PomXml pomCopy;
         private String pomPath;
         private String pomCopyPath;
         private String fullPath;
@@ -47,13 +46,13 @@ namespace ConnectTest.UtilsTest
 
         public RenameWebReferenceTest()
         {
-            ResourceFolder classLibrary = new ProjectStructure("NPanday.VisualStudio.Addin")
-               .TestResource.Folder("ClassLibrary1\\ClassLibrary1");
+            ResourceFolder classLibrary = new SimpleSrcStructure(MainOrTest.Test,"NPanday.VisualStudio.Addin")
+               .Resources.Folder("ClassLibrary1\\ClassLibrary1");
 
             pomPath = classLibrary.File("pom.xml").FullName;
             pomCopyPath = pomPath.Replace("pom.xml", "pomCopy.xml");
 
-            pomCopy = new PomHelperUtility(pomCopyPath);
+            pomCopy = new PomXml(pomCopyPath);
 
             File.Copy(pomPath, pomCopyPath,true);
 
