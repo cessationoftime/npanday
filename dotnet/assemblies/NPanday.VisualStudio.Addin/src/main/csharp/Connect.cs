@@ -1061,7 +1061,6 @@ namespace NPanday.VisualStudio.Addin
 
             structure = new SolutionStructure(_dte2.Solution);
 
-
             addReferenceControls = new List<CommandBarButton>();
             buildControls = new List<CommandBarControl>();
             foreach (CommandBar commandBar in (CommandBars)_dte2.CommandBars)
@@ -1082,7 +1081,7 @@ namespace NPanday.VisualStudio.Addin
                         ctl.Caption = Messages.MSG_C_ADD_MAVEN_ARTIFACT;
                         ctl.Visible = true;
                         addReferenceControls.Add(ctl);
-
+                        
                     }
                     else if (control.Caption.Equals("C&onfiguration Manager..."))
                     {

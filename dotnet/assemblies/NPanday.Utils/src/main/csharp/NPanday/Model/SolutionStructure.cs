@@ -96,7 +96,7 @@ namespace NPanday.Model
                     bool added = false;
                     foreach (SrcStructure srcTest in sourcesWithoutParent.Where(x => x.isTestSrc))
                     {
-                        if (srcMain.SrcFolder.FullName == srcTest.SrcFolder.FullName)
+                        if (srcMain.ProjectFolder.FullName == srcTest.ProjectFolder.FullName)
                         {
                             projectList.Add(new ProjectStructure(srcMain, srcTest,this));
                             added = true;
