@@ -40,6 +40,7 @@ namespace NPanday.Model
         internal SimpleSrcStructure(string FullPathTo_CSPROJ_File)
         {
             srcFolder = new FileInfo(FullPathTo_CSPROJ_File).Directory.Parent;
+            if (srcFolder.Name == "csharp") srcFolder = srcFolder.Parent;
             if (srcFolder.Name == "test" || srcFolder.Name == "main") projectFolder = srcFolder.Parent.Parent;
         }
 

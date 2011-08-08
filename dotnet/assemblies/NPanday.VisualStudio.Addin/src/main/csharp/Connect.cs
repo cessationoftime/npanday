@@ -427,6 +427,9 @@ namespace NPanday.VisualStudio.Addin
             projectItemsEvents.ItemRemoved += new _dispProjectItemsEvents_ItemRemovedEventHandler(ProjectItemEvents_ItemRemoved);
             projectItemsEvents.ItemRenamed += new _dispProjectItemsEvents_ItemRenamedEventHandler(ProjectItemEvents_ItemRenamed);
 
+            documentEvents = (EnvDTE.DocumentEvents)((Events2)_dte2.Events).DocumentEvents;
+            documentEvents.DocumentSaved += new _dispDocumentEvents_DocumentSavedEventHandler(DocumentEvents_DocumentSaved);
+
             if (connectMode == ext_ConnectMode.ext_cm_UISetup)
             {
 
@@ -2073,6 +2076,27 @@ namespace NPanday.VisualStudio.Addin
         }
         #endregion
 
+        private void DocumentEvents_DocumentSaved(EnvDTE.Document document)
+        {
+            string fileName = null;
+            
+
+            try
+            {
+                fileName = document.Name.ToLower();
+
+                if (fileName=="pom.xml")
+                {
+                    MessageBox.Show("pom.xml has been saved, check for reference changes.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                outputWindowPane.OutputString(ex.Message);
+            }
+        }
+
         // by jan ancajas
         #region cbChangeSettingsXmlForm_Click(CommandBarButton, bool)
         private void cbChangeSettingsXmlForm_Click(CommandBarButton btn, ref bool Cancel)
@@ -2191,6 +2215,7 @@ namespace NPanday.VisualStudio.Addin
 
         List<WebServicesReferenceWatcher> wsRefWatcher = new List<WebServicesReferenceWatcher>();
         List<WebServicesReferenceWatcher> svRefWatcher = new List<WebServicesReferenceWatcher>();
+        private DocumentEvents documentEvents;
 
         #endregion
 
